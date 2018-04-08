@@ -44,7 +44,8 @@ int main(int argc, char *argv[]){
 	                                             UPC_IN_ALLSYNC | UPC_OUT_ALLSYNC);
 	upc_all_fclose(input_file);
 	
-	printf("Reading Finished on Thread#%d of %d threads.\n", MYTHREAD, THREADS);
+	printf("Reading Finished on Thread#%d of %d threads. Read %d kMers. Skip %d kMers.\n", 
+	MYTHREAD, THREADS, my_lines_to_read, my_lines_to_skip);
 	
 
 	///////////////////////////////////////////
