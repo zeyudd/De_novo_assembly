@@ -1,0 +1,25 @@
+#!/bin/bash -l 
+#SBATCH -p RM
+#SBATCH -N 1
+#SBATCH -n 28
+#SBATCH -t 00:30:00 
+#SBATCH -J single-HW3
+#SBATCH -o single-HW3.%j.out
+#SBATCH -e single-HW3.%j.err
+
+
+# Specify path to your input file here
+INPUT=test
+
+cd ${PWD}
+for P in `seq 1 10`; do
+	upcrun -np $P -shared-heap=3G ./pgen ${INPUT}
+done
+for P in `seq 11 20`; do
+	upcrun -np $P -shared-heap=2G ./pgen ${INPUT}
+done
+for P in `seq 21 28`; do
+	upcrun -np $P -shared-heap=1G ./pgen ${INPUT}
+done
+
+
