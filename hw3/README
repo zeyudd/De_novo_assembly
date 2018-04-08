@@ -1,0 +1,9 @@
+In order to compile and run UPC code, you will need to set the following environment variables:
+
+You may need to change the following commands based on your shell (the following is an example for BASH)
+
+#find the manual/help documents for UPC
+export MANPATH=$MANPATH:/pylon2/cc3uv3p/bbrock/public/opt/bupc/share/man
+
+#find the UPC compilers and runtime
+export PATH=$PATH:/pylon2/cc3uv3p/bbrock/public/opt/bupc/bin:/pylon2/cc3uv3p/bbrock/public/opt/bupc/opt/bin

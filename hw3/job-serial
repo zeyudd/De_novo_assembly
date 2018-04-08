@@ -1,0 +1,12 @@
+#!/bin/bash  
+#SBATCH -p RM
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH -t 00:10:00 
+#SBATCH -J serial-HW3
+#SBATCH -o serial-HW3.%j.out
+#SBATCH -e serial-HW3.%j.err
+
+cd ${PWD}
+./serial test
+
