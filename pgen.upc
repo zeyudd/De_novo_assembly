@@ -5,6 +5,7 @@
 #include <math.h>
 #include <time.h>
 #include <upc.h>
+#include <upc_io.h>
 
 #include "packingDNAseq.h"
 #include "kmer_hash.h"
@@ -28,7 +29,7 @@ int main(int argc, char *argv[]){
 	int64_t rem_nKmers = nKmers % THREADS;
 	
 	int64_t my_lines_to_read = (MYTHREAD < rem_nKmers)? (avg_nKmers+1) : avg_nKmers;
-	int64_t my_lines_to_skip = (MYTHREAD <= rem_nKmers)? (avg_n * MYTHREAD + MYTHREAD) : (avg_n * MYTHREAD + rem_nKmers);
+	int64_t my_lines_to_skip = (MYTHREAD <= rem_nKmers)? (avg_nKmers * MYTHREAD + MYTHREAD) : (avg_nKmers * MYTHREAD + rem_nKmers);
 
 	int64_t my_read_size = my_lines_to_read * LINE_SIZE;
 	int64_t my_read_offset = my_lines_to_skip * LINE_SIZE;
