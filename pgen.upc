@@ -19,7 +19,35 @@ int main(int argc, char *argv[]){
 	upc_barrier;
 	inputTime -= gettime();
 	///////////////////////////////////////////
-	// Your code for input file reading here //
+	//   code for input file reading : begin //
+	///////////////////////////////////////////
+	char * input_UFX_name = argv[1];
+	int64_t nKmers = getNumKmersInUFX(input_UFX_name);
+	
+	int64_t avg_nKmers = nKmers / THREADS;
+	int64_t rem_nKmers = nKmers % THREADS;
+	
+	int64_t my_lines_to_read = (MYTHREAD < rem_nKmers)? (avg_nKmers+1) : avg_nKmers;
+	int64_t my_lines_to_skip = (MYTHREAD <= rem_nKmers)? (avg_n * MYTHREAD + MYTHREAD) : (avg_n * MYTHREAD + rem_nKmers);
+
+	int64_t my_read_size = my_lines_to_read * LINE_SIZE;
+	int64_t my_read_offset = my_lines_to_skip * LINE_SIZE;
+
+	unsigned char* my_buffer = 
+	  (unsigned char*) malloc((my_read_size) * sizeof(unsigned char)); // local buffer
+	
+	upc_file_t *input_file;
+	input_file = upc_all_fopen(input_UFX_name, UPC_RDONLY | UPC_INDIVIDUAL_FP, 0, NULL);
+	upc_all_fseek(input_file, my_read_offset*sizeof(unsigned char), UPC_SEEK_SET);
+	int64_t cur_chars_read = upc_all_fread_local(input_file, my_buffer, sizeof(unsigned char), my_read_size,
+	                                             UPC_IN_ALLSYNC | UPC_OUT_ALLSYNC);
+	upc_all_fclose(input_file);
+	
+	printf("Reading Finished on Thread#%d of %d threads.\n", MYTHREAD, THREADS);
+	
+
+	///////////////////////////////////////////
+	//   code for input file reading : end   //
 	///////////////////////////////////////////
 	upc_barrier;
 	inputTime += gettime();
