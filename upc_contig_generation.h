@@ -38,7 +38,7 @@ static double gettime(void) {
 /* K-mer data structure */
 typedef struct kmer_t kmer_t;
 struct kmer_t{
-   shared char kmer[KMER_PACKED_LENGTH];
+   shared char *kmer;
    char l_ext;
    char r_ext;
    shared kmer_t *next;
