@@ -88,7 +88,7 @@ int main(int argc, char *argv[]){
 	heaps = (shared [1] memory_heap_t *) upc_all_alloc (THREADS, sizeof(memory_heap_t));	    
    	heaps[MYTHREAD].heap = (shared kmer_t *) upc_all_alloc(my_lines_to_read, sizeof(kmer_t));
    	if (heaps[MYTHREAD].heap == NULL) {
-      	fprintf(stderr, "ERROR: Could not allocate memory for the heap!\n");
+      	fprintf(stderr, "ERROR: Thread %d could not allocate memory for the heap!\n", MYTHREAD);
       	upc_global_exit(1);
    	}
 	heaps[MYTHREAD].posInHeap = 0;
@@ -97,7 +97,6 @@ int main(int argc, char *argv[]){
     	/* working_buffer[ptr] is the start of the current k-mer                */
      	/* so current left extension is at working_buffer[ptr+KMER_LENGTH+1]    */
      	/* and current right extension is at working_buffer[ptr+KMER_LENGTH+2]  */
-
       	left_ext = (char) my_buffer[ptr+KMER_LENGTH+1];
       	right_ext = (char) my_buffer[ptr+KMER_LENGTH+2];
 
