@@ -86,6 +86,28 @@ int main(int argc, char *argv[]){
    	}
 	memory_heap.posInHeap = 0;
 
+	int64_t ptr = 0;
+	char cur_contig[MAXIMUM_CONTIG_SIZE], unpackedKmer[KMER_LENGTH+1], left_ext, right_ext;
+	while (ptr < cur_chars_read) {
+    	/* working_buffer[ptr] is the start of the current k-mer                */
+     	/* so current left extension is at working_buffer[ptr+KMER_LENGTH+1]    */
+     	/* and current right extension is at working_buffer[ptr+KMER_LENGTH+2]  */
+
+      	left_ext = (char) working_buffer[ptr+KMER_LENGTH+1];
+      	right_ext = (char) working_buffer[ptr+KMER_LENGTH+2];
+
+      	/* Add k-mer to hash table */
+      	add_kmer(hashtable, &memory_heap, &my_buffer[ptr], left_ext, right_ext);
+
+      	/* Create also a list with the "start" kmers: nodes with F as left (backward) extension */
+      	if (left_ext == 'F') {
+         	addKmerToStartList(&memory_heap, &startKmersList);
+      	}
+
+      	/* Move to the next k-mer in the input working_buffer */
+      	ptr += LINE_SIZE;
+   	}
+
 
 	
 	

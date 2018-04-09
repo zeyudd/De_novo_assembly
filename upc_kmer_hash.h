@@ -9,12 +9,13 @@
 #include "upc_contig_generation.h"
 #include <upc.h>
 
+#if 0
 shared hash_table_t* upc_create_hash_table(int64_t nEntries, shared memory_heap_t *memory_heap)
 {
    shared hash_table_t *result;
    int64_t n_buckets = nEntries * LOAD_FACTOR;
 
-   result = (shared hash_table_t*) upc_all_alloc(sizeof(hash_table_t));
+   result = (shared hash_table_t*) upc_all_alloc(1, sizeof(hash_table_t));
    result->size = n_buckets;
    result->table = (shared bucket_t*) upc_all_alloc(n_buckets , sizeof(bucket_t));
    
@@ -32,7 +33,7 @@ shared hash_table_t* upc_create_hash_table(int64_t nEntries, shared memory_heap_
    
    return result;
 }
-
+#endif
 
 /* Auxiliary function for computing hash values */
 int64_t hashseq(int64_t  hashtable_size, char *seq, int size)
