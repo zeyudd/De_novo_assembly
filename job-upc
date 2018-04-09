@@ -14,11 +14,11 @@ INPUT=test		# Path to your input file
 cd ${PWD}
 
 # Run program
-#./serial ${INPUT}
+./serial ${INPUT}
 upcrun -np $P -shared-heap=1G ./pgen ${INPUT}
 
 # Sort contigs in both output files to compare
-# sort serial.out > serial.sorted
+sort serial.out > serial.sorted
 sort pgen.out > pgen.sorted
 
 # diff -q <file1> <file2> will print nothing if both files are equal
