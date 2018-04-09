@@ -9,6 +9,8 @@
 #include "upc_contig_generation.h"
 #include <upc.h>
 
+extern upc_lock_t heap_lock;
+
 #if 0
 shared hash_table_t* upc_create_hash_table(int64_t nEntries, shared memory_heap_t *memory_heap)
 {
@@ -81,7 +83,11 @@ int add_kmer(shared hash_table_t *hashtable, shared memory_heap_t *memory_heap, 
    char packedKmer[KMER_PACKED_LENGTH];
    packSequence(kmer, (unsigned char*) packedKmer, KMER_LENGTH);
    int64_t hashval = hashkmer(hashtable->size, (char*) packedKmer);
+
+   upc_lock(heap_lock);
    int64_t pos = memory_heap->posInHeap;
+   memory_heap->posInHeap++;
+   upc_unlock(heap_lock);
    
    /* Add the contents to the appropriate kmer struct in the heap */
    upc_memput((memory_heap->heap[pos]).kmer, packedKmer, KMER_PACKED_LENGTH * sizeof(char));
@@ -93,8 +99,8 @@ int add_kmer(shared hash_table_t *hashtable, shared memory_heap_t *memory_heap, 
    /* Fix the head pointer of the appropriate bucket to point to the current kmer */
    hashtable->table[hashval].head = &(memory_heap->heap[pos]);
    
-   /* Increase the heap pointer */
-   memory_heap->posInHeap++;
+
+   
    
    return 0;
 }
