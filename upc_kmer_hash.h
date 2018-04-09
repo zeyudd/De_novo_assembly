@@ -60,8 +60,8 @@ int add_kmer(shared bucket_t *hashtable, int64_t hashtable_size, shared kmer_t *
    int64_t pos = *posInHeap;
       
    /* Add the contents to the appropriate kmer struct in the heap */
-   upc_memput((kmers[pos * KMER_PACKED_SIZE], packedKmer, KMER_PACKED_LENGTH * sizeof(char));
-   heap[pos].kmer = &kmers[pos * KMER_PACKED_SIZE];
+   upc_memput(kmers[pos * KMER_PACKED_LENGTH], packedKmer, KMER_PACKED_LENGTH * sizeof(char));
+   heap[pos].kmer = &kmers[pos * KMER_PACKED_LENGTH];
    heap[pos].l_ext = left_ext;
    heap[pos].r_ext = right_ext;
    
