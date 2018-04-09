@@ -24,7 +24,7 @@ int main(int argc, char *argv[]){
 	int64_t ptr = 0;
 
 	char cur_contig[MAXIMUM_CONTIG_SIZE], unpackedKmer[KMER_LENGTH+1], left_ext, right_ext;
-	shared start_kmer_t *startKmersList = NULL, *curStartNode;
+	start_kmer_t *startKmersList = NULL, *curStartNode;
 
 	kmer_t *cur_kmer_ptr;
 	upc_file_t *input_file;
