@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
 	data[MYTHREAD].mer[0] = 'A' + MYTHREAD;
 	data[MYTHREAD].mer[1] = '\0';
 
-	printf("data[%d] = (%d, %s)\n", MYTHREAD, data[MYTHREAD].pos, data[MYTHREAD].mer);
+	printf("Thread%d: data[%d] = (%d, %s)\n",MYTHREAD, MYTHREAD, data[MYTHREAD].pos, data[MYTHREAD].mer);
 
 	upc_barrier;
 	sleep(1);
@@ -52,7 +52,8 @@ int main(int argc, char *argv[]){
 		int i;
 		for(i = 0; i < THREADS; i++){
 			//printf("data[%d] = (%d, %s)\n", i, data[i].pos, data[i].mer);
-			printf("data[%d] = (%d, %s)\n", i, data[i].pos, &mers[i*2]);
+			//printf("data[%d] = (%d, %s)\n", i, data[i].pos, &mers[i*2]);
+			printf("Thread0: data[%d] = (%d)\n", i, data[i].pos);
 		}
 	}
 #endif
