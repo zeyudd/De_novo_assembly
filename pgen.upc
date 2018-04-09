@@ -41,8 +41,9 @@ int main(int argc, char *argv[]){
 	upc_file_t *input_file;
 	input_file = upc_all_fopen(input_UFX_name, UPC_RDONLY | UPC_INDIVIDUAL_FP, 0, NULL);
 	upc_all_fseek(input_file, my_read_offset*sizeof(unsigned char), UPC_SEEK_SET);
-	int64_t cur_chars_read = upc_all_fread_local(input_file, my_buffer, sizeof(unsigned char), my_read_size,
-	                                             UPC_IN_ALLSYNC | UPC_OUT_ALLSYNC);
+	int64_t cur_chars_read = upc_all_fread_local(input_file, my_buffer, 
+												sizeof(unsigned char), my_read_size, 
+												UPC_IN_ALLSYNC | UPC_OUT_ALLSYNC);
 	upc_all_fclose(input_file);
 	
 	printf("Thread#%d of %d: read %d kMers, skip %d kMers.\n", 
@@ -65,28 +66,11 @@ int main(int argc, char *argv[]){
 
 	/* Creates a hash table and (pre)allocates memory for the memory heap */
 
-/*
-	shared int64_t heap_pos = 0;
-	shared kmer_t* heap_addr = (shared kmer_t*)upc_all_alloc(nKmers, sizeof(kmer_t));
-	if (memory_heap == NULL) {
-      fprintf(stderr, "ERROR: Could not allocate memory for the heap!\n");
-      exit(1);
-   }
-	
-	int64_t hash_table_size = nKmers * LOAD_FACTOR;
-	shared bucket_t* hash_table_addr = (shared bucket_t*)upc_all_alloc(nKmers, sizeof(bucket_t));
-	if (hash_table_addr == NULL) {
-      fprintf(stderr, "ERROR: Could not allocate memory for the hash table!\n");
-      exit(1);
-   }
-*/
 	static shared hash_table_t hash_table;
    	static shared memory_heap_t memory_heap;
-
 	
     int64_t n_buckets = nKmers * LOAD_FACTOR;
-
-   
+ 
    	hash_table.size = n_buckets;
    	hash_table.table = (shared bucket_t*) upc_all_alloc(n_buckets , sizeof(bucket_t));
    
@@ -101,8 +85,29 @@ int main(int argc, char *argv[]){
       	exit(1);
    	}
 	memory_heap.posInHeap = 0;
+
+
 	
 	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -11,12 +11,12 @@
 
 shared hash_table_t* upc_create_hash_table(int64_t nEntries, shared memory_heap_t *memory_heap)
 {
-   shared hash_table_t *result; /*
+   shared hash_table_t *result;
    int64_t n_buckets = nEntries * LOAD_FACTOR;
 
-   result = (hash_table_t*) malloc(sizeof(hash_table_t));
+   result = (shared hash_table_t*) upc_all_alloc(sizeof(hash_table_t));
    result->size = n_buckets;
-   result->table = (bucket_t*) calloc(n_buckets , sizeof(bucket_t));
+   result->table = (shared bucket_t*) upc_all_alloc(n_buckets , sizeof(bucket_t));
    
    if (result->table == NULL) {
       fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));
@@ -28,12 +28,12 @@ shared hash_table_t* upc_create_hash_table(int64_t nEntries, shared memory_heap_
       fprintf(stderr, "ERROR: Could not allocate memory for the heap!\n");
       exit(1);
    }
-   memory_heap->posInHeap = 0;*/
+   memory_heap->posInHeap = 0;
    
    return result;
 }
 
-#if 0
+
 /* Auxiliary function for computing hash values */
 int64_t hashseq(int64_t  hashtable_size, char *seq, int size)
 {
@@ -124,6 +124,6 @@ int dealloc_hashtable(hash_table_t *hashtable)
    free(hashtable->table);
    return 0;
 }
-#endif
+
 
 #endif // KMER_HASH_H
