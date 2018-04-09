@@ -66,7 +66,7 @@ shared kmer_t* lookup_kmer(shared hash_table_t *hashtable, const unsigned char *
    result = cur_bucket.head;
    
    for (; result!=NULL; ) {
-      if ( memcmp(packedKmer, result->kmer, KMER_PACKED_LENGTH * sizeof(char)) == 0 ) {
+      if ( memcmp(packedKmer, (unsiged char*)result->kmer, KMER_PACKED_LENGTH * sizeof(char)) == 0 ) {
          return result;
       }
       result = result->next;
