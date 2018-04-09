@@ -21,8 +21,10 @@ struct data_t{
 int main(int argc, char *argv[]){
 
 	shared [1] data_t * data;
+	upc_barrier;
 
 	data = (shared [1] data_t * )upc_all_alloc(THREADS, sizeof(data_t));
+	
 
 	data[MYTHREAD].pos = MYTHREAD;
 	data[MYTHREAD].mer[0] = 'A' + MYTHREAD;
