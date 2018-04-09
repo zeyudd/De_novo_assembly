@@ -13,7 +13,7 @@
 //upc_lock_t heap_lock;
 typedef struct data_t data_t;
 struct data_t{
-	char mer[2];
+	shared char mer[2];
 	int pos;
 };
 
@@ -33,10 +33,10 @@ int main(int argc, char *argv[]){
 
 
 	data[MYTHREAD].pos = MYTHREAD;
-	//data[MYTHREAD].mer[0] = 'A' + MYTHREAD;
-	//data[MYTHREAD].mer[1] = '\0';
+	data[MYTHREAD].mer[0] = 'A' + MYTHREAD;
+	data[MYTHREAD].mer[1] = '\0';
 
-	printf("data[%d] = (%d)\n", MYTHREAD, data[MYTHREAD].pos);
+	printf("data[%d] = (%d, %s)\n", MYTHREAD, data[MYTHREAD].pos, data[MYTHREAD].mer);
 
 	upc_barrier;
 	sleep(1);
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]){
 	if(MYTHREAD == 0){
 		int i;
 		for(i = 0; i < THREADS; i++){
-			printf("data[%d] = (%d)\n", i, data[i].pos);
+			printf("data[%d] = (%d, %s)\n", i, data[i].pos, data[i].mer);
 		}
 	}
 #endif
