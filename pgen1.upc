@@ -51,7 +51,8 @@ int main(int argc, char *argv[]){
 	if(MYTHREAD == 0){
 		int i;
 		for(i = 0; i < THREADS; i++){
-			printf("data[%d] = (%d, %s)\n", i, data[i].pos, data[i].mer);
+			//printf("data[%d] = (%d, %s)\n", i, data[i].pos, data[i].mer);
+			printf("data[%d] = (%d, %s)\n", i, data[i].pos, &mers[i*2]);
 		}
 	}
 #endif
