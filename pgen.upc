@@ -80,7 +80,7 @@ int main(int argc, char *argv[]){
 //      	fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));
 //      	upc_global_exit(1);
 //   	}
-	upc_memset(hashtable.table, 0, n_buckets * sizeof(bucket_t));  
+//	upc_memset(hashtable.table, 0, n_buckets * sizeof(bucket_t));  
 
 //   	static shared memory_heap_t memory_heap;
 
