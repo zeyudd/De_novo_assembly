@@ -89,6 +89,7 @@ shared hash_table_t* upc_create_hash_table(int64_t nEntries, shared memory_heap_
    return result;
 }
 */	
+/*
 	shared int64_t heap_pos = 0;
 	shared kmer_t* heap_addr = (shared kmer_t*)upc_all_alloc(nKmers, sizeof(kmer_t));
 	if (memory_heap == NULL) {
@@ -102,7 +103,7 @@ shared hash_table_t* upc_create_hash_table(int64_t nEntries, shared memory_heap_
       fprintf(stderr, "ERROR: Could not allocate memory for the hash table!\n");
       exit(1);
    }
-
+*/
 	static shared hash_table_t *hashtable;
    	static shared memory_heap_t memory_heap;
 	hashtable = upc_create_hash_table(nKmers, &memory_heap);
