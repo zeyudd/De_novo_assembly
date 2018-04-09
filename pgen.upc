@@ -106,7 +106,7 @@ int main(int argc, char *argv[]){
 
       	/* Create also a list with the "start" kmers: nodes with F as left (backward) extension */
       	if (left_ext == 'F') {
-        // 	addKmerToStartList(&heaps[MYTHREAD], &startKmersList);
+         	addKmerToStartList(heaps, MyPosInHeap, &startKmersList);
       	}
 
       	/* Move to the next k-mer in the input working_buffer */

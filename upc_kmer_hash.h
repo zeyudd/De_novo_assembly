@@ -56,15 +56,15 @@ int64_t hashkmer(int64_t  hashtable_size, char *seq)
 }
 
 /* Looks up a kmer in the hash table and returns a pointer to that entry */
-shared kmer_t* lookup_kmer(shared hash_table_t *hashtable, const unsigned char *kmer)
+shared kmer_t* lookup_kmer(shared bucket_t *hashtable, int64_t hastable_size, const unsigned char *kmer)
 {
    char packedKmer[KMER_PACKED_LENGTH];
    packSequence(kmer, (unsigned char*) packedKmer, KMER_LENGTH);
-   int64_t hashval = hashkmer(hashtable->size, (char*) packedKmer);
-   bucket_t cur_bucket;
+   int64_t hashval = hashkmer(hashtable_size, (char*) packedKmer);
+   shared bucket_t cur_bucket;
    shared kmer_t *result;
    
-   cur_bucket = hashtable->table[hashval];
+   cur_bucket = hashtable[hashval];
    result = cur_bucket.head;
    
    for (; result!=NULL; ) {
@@ -100,19 +100,19 @@ int add_kmer(shared bucket_t *hashtable, int64_t hashtable_size, shared kmer_t *
    *posInHeap += THREADS; 
    return 0;
 }
-#if 0
+
 /* Adds a k-mer in the start list by using the memory heap (the k-mer was "just added" in the memory heap at position posInHeap - 1) */
-void addKmerToStartList(shared memory_heap_t *memory_heap,shared start_kmer_t **startKmersList)
+void addKmerToStartList(shared kmer_t *heap, int64_t posInHeap, start_kmer_t **startKmersList)
 {
-   shared start_kmer_t *new_entry;
-   shared kmer_t *ptrToKmer;
+    start_kmer_t *new_entry;
+    shared kmer_t *ptrToKmer;
    
-   int64_t prevPosInHeap = memory_heap->posInHeap - 1;
-   ptrToKmer = &(memory_heap->heap[prevPosInHeap]);
-   new_entry = (shared start_kmer_t*) upc_alloc(sizeof(start_kmer_t));
-   new_entry->next = (*startKmersList);
-   new_entry->kmerPtr = ptrToKmer;
-   (*startKmersList) = new_entry;
+    int64_t prevPosInHeap = posInHeap - THREADS;
+    ptrToKmer = &(heap[prevPosInHeap]);
+    new_entry = (start_kmer_t*)malloc(sizeof(start_kmer_t));
+    new_entry->next = (*startKmersList);
+    new_entry->kmerPtr = ptrToKmer;
+    (*startKmersList) = new_entry;
 }
 
 /* Deallocation functions */
@@ -127,6 +127,6 @@ int dealloc_hashtable(hash_table_t *hashtable)
    upc_free(hashtable->table);
    return 0;
 }
-#endif
+
 
 #endif // KMER_HASH_H
