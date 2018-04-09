@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
 	data[MYTHREAD].pos = MYTHREAD;
 	data[MYTHREAD].mer = &mers[2*MYTHREAD];
 	data[MYTHREAD].mer[0] = 'A' + MYTHREAD;
-	data[MYTHREAD].mer[1] = '\0';
+	data[MYTHREAD].mer[1] = 'D' + MYTHREAD;
 
 	printf("Thread%d: data[%d] = (%d, %s)\n",MYTHREAD, MYTHREAD, data[MYTHREAD].pos, data[MYTHREAD].mer);
 
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
 		for(i = 0; i < THREADS; i++){
 			//printf("data[%d] = (%d, %s)\n", i, data[i].pos, data[i].mer);
 			//printf("data[%d] = (%d, %s)\n", i, data[i].pos, &mers[i*2]);
-			printf("Thread0: data[%d] = (%d, %c, %c)\n", i, data[i].pos, mers[i], mers[i+1]);
+			printf("Thread0: data[%d] = (%d, %c, %c)\n", i, data[i].pos, mers[2*i], mers[2*i+1]);
 		}
 	}
 #endif
