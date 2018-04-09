@@ -107,7 +107,7 @@ void addKmerToStartList(shared memory_heap_t *memory_heap,shared start_kmer_t **
    shared start_kmer_t *new_entry;
    shared kmer_t *ptrToKmer;
    
-   int64_t prevPosInHeap = heaps[MYTHREAD]->posInHeap - 1;
+   int64_t prevPosInHeap = memory_heap->posInHeap - 1;
    ptrToKmer = &(memory_heap->heap[prevPosInHeap]);
    new_entry = (shared start_kmer_t*) upc_alloc(sizeof(start_kmer_t));
    new_entry->next = (*startKmersList);
