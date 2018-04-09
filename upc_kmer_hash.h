@@ -17,7 +17,7 @@ hash_table_t* create_hash_table(int64_t nEntries, memory_heap_t *memory_heap)
 
    result = (hash_table_t*) malloc(sizeof(hash_table_t));
    result->size = n_buckets;
-   result->table = (bucket_t*) calloc(n_buckets , sizeof(bucket_t));
+   result->table = (shared bucket_t*) calloc(n_buckets , sizeof(bucket_t));
    
    if (result->table == NULL) {
       fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));
