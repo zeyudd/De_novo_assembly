@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <math.h>
 #include <string.h>
+#include <upc.h>
 
 #ifndef MAXIMUM_CONTIG_SIZE
 #define MAXIMUM_CONTIG_SIZE 100000
@@ -59,7 +60,7 @@ struct bucket_t{
 typedef struct hash_table_t hash_table_t;
 struct hash_table_t {
    int64_t size;           // Size of the hash table
-   bucket_t *table;			// Entries of the hash table are pointers to buckets
+   shared bucket_t *table;			// Entries of the hash table are pointers to buckets
 };
 
 /* Memory heap data structure */
