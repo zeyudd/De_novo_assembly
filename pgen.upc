@@ -80,7 +80,7 @@ int main(int argc, char *argv[]){
       exit(1);
    }
 */
-	static shared hash_table_t hashtable;
+	static shared hash_table_t hash_table;
    	static shared memory_heap_t memory_heap;
 
 	
