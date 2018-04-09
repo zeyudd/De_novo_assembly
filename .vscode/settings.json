@@ -2,6 +2,10 @@
     "files.associations": {
         "__locale": "cpp",
         "*.upc": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "iterator": "c",
+        "string": "c",
+        "string_view": "c",
+        "vector": "c"
     }
 }
