@@ -131,7 +131,7 @@ int main(int argc, char *argv[]){
 	if(MYTHREAD == 0){
 		int i;
 		for(i = 0; i < nKmers; i++){
-			unpackSequence(&kmers[i*KMER_PACKED_LENGTH], unpackedKmer, KMER_LENGTH);			
+			unpackSequence((const unsigned char *)&kmers[i*KMER_PACKED_LENGTH], unpackedKmer, KMER_LENGTH);			
 			printf("%c, %c, %s\n", heap[i].l_ext, heap[i].r_ext, unpackedKmer);
 		}
 
