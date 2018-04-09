@@ -77,12 +77,13 @@ shared kmer_t* lookup_kmer(shared hash_table_t *hashtable, const unsigned char *
 }
 
 /* Adds a kmer and its extensions in the hash table (note that a memory heap should be preallocated. ) */
-int add_kmer(shared hash_table_t *hashtable, shared kmer_t *heap, int64_t *posInHeap, const unsigned char *kmer, char left_ext, char right_ext)
+//int add_kmer(shared hash_table_t *hashtable, shared kmer_t *heap, int64_t *posInHeap, const unsigned char *kmer, char left_ext, char right_ext)
+int add_kmer(shared kmer_t *heap, int64_t *posInHeap, const unsigned char *kmer, char left_ext, char right_ext)
 {
    /* Pack a k-mer sequence appropriately */
    char packedKmer[KMER_PACKED_LENGTH];
    packSequence(kmer, (unsigned char*) packedKmer, KMER_LENGTH);
-   int64_t hashval = hashkmer(hashtable->size, (char*) packedKmer);
+   //int64_t hashval = hashkmer(hashtable->size, (char*) packedKmer);
 
 
    int64_t pos = *posInHeap;
