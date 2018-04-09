@@ -72,22 +72,20 @@ int main(int argc, char *argv[]){
     init_LookupTable();
 	/* Creates a hash table and (pre)allocates memory for the memory heap */
 
-	//static shared hash_table_t hashtable;
-	//int64_t n_buckets = nKmers * LOAD_FACTOR;
-   	//hashtable.size = n_buckets;
-   	//hashtable.table = (shared bucket_t*) upc_all_alloc(n_buckets , sizeof(bucket_t));	
+
+
+	shared [LOAD_FACTOR] bucket_t *hashtable;
+	hashtable = (shared [LOAD_FACTOR] bucket_t *) upc_all_alloc(nKmers, LOAD_FACTOR *sizeof(bucket_t));
+	hashtable_size = nKmers * LOAD_FACTOR;	
 //   	if (hashtable.table == NULL) {
 //      	fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));
 //      	upc_global_exit(1);
 //   	}
-//	upc_memset(hashtable.table, 0, n_buckets * sizeof(bucket_t));  
+	upc_memset(hashtable, 0, nKmers * LOAD_FACTOR * sizeof(bucket_t));  
 
-//   	static shared memory_heap_t memory_heap;
 
 	shared [1] kmer_t *heap;
-	heap = (shared [1] kmer_t *) upc_all_alloc (nKmers, sizeof(kmer_t));
-
-   	
+	heap = (shared [1] kmer_t *) upc_all_alloc (nKmers, sizeof(kmer_t));  	
 //   	if (heaps[MYTHREAD].heap == NULL) {
 //      	fprintf(stderr, "ERROR: Thread %d could not allocate memory for the heap!\n", MYTHREAD);
 //      	upc_global_exit(1);
