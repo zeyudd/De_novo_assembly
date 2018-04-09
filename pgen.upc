@@ -116,7 +116,6 @@ int main(int argc, char *argv[]){
 	
 	//  code for graph construction: end     //
 	///////////////////////////////////////////
-	printf("Thread %d done./n");
 	upc_barrier;
 	constrTime += gettime();
 
@@ -126,7 +125,7 @@ int main(int argc, char *argv[]){
 		int i;
 		for(i = 0; i < nKmers; i++){
 			unpackSequence(heap[i].kmer, unpackedKmer, KMER_LENGTH);			
-			printf("%s\n", unpackedKmer);
+			printf("%c, %c, %s\n", heap[i],l_ext, heap[i].r_ext, unpackedKmer);
 		}
 
 
