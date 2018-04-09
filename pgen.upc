@@ -101,7 +101,7 @@ int main(int argc, char *argv[]){
 
       	/* Add k-mer to hash table */
       	//add_kmer(&hashtable, heap, &myPosInHeap, &my_buffer[ptr], left_ext, right_ext);
-		add_kmer(heap, &myPosInHeap, &my_buffer[ptr], left_ext, right_ext);
+		add_kmer(hashtable, hashtable_size, heap, &myPosInHeap, &my_buffer[ptr], left_ext, right_ext);
 		
 
       	/* Create also a list with the "start" kmers: nodes with F as left (backward) extension */
