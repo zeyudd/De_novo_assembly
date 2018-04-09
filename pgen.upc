@@ -64,31 +64,7 @@ int main(int argc, char *argv[]){
 
 
 	/* Creates a hash table and (pre)allocates memory for the memory heap */
-/*
-shared hash_table_t* upc_create_hash_table(int64_t nEntries, shared memory_heap_t *memory_heap)
-{
-   shared hash_table_t *result;
-   
 
-   result = (shared hash_table_t*) upc_all_alloc(sizeof(hash_table_t), 1);
-   result->size = n_buckets;
-   result->table = (shared bucket_t*) upc_all_alloc(n_buckets , sizeof(bucket_t));
-   
-   if (result->table == NULL) {
-      fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));
-      exit(1);
-   }
-   
-   memory_heap->heap = (shared kmer_t *) upc_all_alloc(nEntries, sizeof(kmer_t));
-   if (memory_heap->heap == NULL) {
-      fprintf(stderr, "ERROR: Could not allocate memory for the heap!\n");
-      exit(1);
-   }
-   memory_heap->posInHeap = 0;
-   
-   return result;
-}
-*/	
 /*
 	shared int64_t heap_pos = 0;
 	shared kmer_t* heap_addr = (shared kmer_t*)upc_all_alloc(nKmers, sizeof(kmer_t));
@@ -104,9 +80,29 @@ shared hash_table_t* upc_create_hash_table(int64_t nEntries, shared memory_heap_
       exit(1);
    }
 */
-	static shared hash_table_t *hashtable;
+	static shared hash_table_t hashtable;
    	static shared memory_heap_t memory_heap;
-	hashtable = upc_create_hash_table(nKmers, &memory_heap);
+
+	
+    int64_t n_buckets = nKmers * LOAD_FACTOR;
+
+   
+   	hash_table.size = n_buckets;
+   	hash_table.table = (shared bucket_t*) upc_all_alloc(n_buckets , sizeof(bucket_t));
+   
+   	if (hash_table.table == NULL) {
+      	fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));
+      	exit(1);
+   	}
+   
+   	memory_heap.heap = (shared kmer_t *) upc_all_alloc(nKmers, sizeof(kmer_t));
+   	if (memory_heap.heap == NULL) {
+      	fprintf(stderr, "ERROR: Could not allocate memory for the heap!\n");
+      	exit(1);
+   	}
+	memory_heap.posInHeap = 0;
+	
+	
 
 
 
