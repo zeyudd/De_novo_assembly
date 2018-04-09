@@ -25,6 +25,12 @@ int main(int argc, char *argv[]){
 
 	data = (shared [1] data_t * )upc_all_alloc(THREADS, sizeof(data_t));
 
+	if(data == NULL){
+		printf("upc_all_alloc failed!\n");
+		return 0;
+
+	}
+
 
 	data[MYTHREAD].pos = MYTHREAD;
 	data[MYTHREAD].mer[0] = 'A' + MYTHREAD;
