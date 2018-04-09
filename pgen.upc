@@ -162,7 +162,7 @@ int main(int argc, char *argv[]){
        	  	cur_contig[posInContig] = right_ext;
        	  	posInContig++;
        	  	/* At position cur_contig[posInContig-KMER_LENGTH] starts the last k-mer in the current contig */
-       	  	cur_kmer_ptr = lookup_kmer(hashtable, (const unsigned char *) &cur_contig[posInContig-KMER_LENGTH]);
+       	  	cur_kmer_ptr = lookup_kmer(&hash_table, (const unsigned char *) &cur_contig[posInContig-KMER_LENGTH]);
        	  	right_ext = cur_kmer_ptr->r_ext;
       	}
 
