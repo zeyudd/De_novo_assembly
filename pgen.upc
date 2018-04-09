@@ -86,8 +86,8 @@ int main(int argc, char *argv[]){
 
 	shared [1] memory_heap_t *heaps;
 	heaps = (shared [1] memory_heap_t *) upc_all_alloc (THREADS, sizeof(memory_heap_t));	    
-   	heaps[MYTHREAD] = (shared kmer_t *) upc_all_alloc(my_lines_to_read, sizeof(kmer_t));
-   	if (heaps[MYTHREAD] == NULL) {
+   	heaps[MYTHREAD].heap = (shared kmer_t *) upc_all_alloc(my_lines_to_read, sizeof(kmer_t));
+   	if (heaps[MYTHREAD].heap == NULL) {
       	fprintf(stderr, "ERROR: Could not allocate memory for the heap!\n");
       	upc_global_exit(1);
    	}
