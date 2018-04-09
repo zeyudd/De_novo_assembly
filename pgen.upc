@@ -205,7 +205,7 @@ int main(int argc, char *argv[]){
       		FILE*in_file = fopen(str, "r");
       
       		while(fscanf(in_file, "%s", cur_contig) == 1)
-        	fprintf(out_file, "%s\n", cur_contig);
+        	fprintf(output_file, "%s\n", cur_contig);
        		fclose(in_file);
     	}  
     	fclose(out_file);
