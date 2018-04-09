@@ -66,7 +66,7 @@ struct hash_table_t {
 /* Memory heap data structure */
 typedef struct memory_heap_t memory_heap_t;
 struct memory_heap_t {
-   kmer_t *heap;
+   shared kmer_t *heap;
    int64_t posInHeap;
 };
 
