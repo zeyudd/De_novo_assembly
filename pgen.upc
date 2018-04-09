@@ -89,12 +89,9 @@ shared hash_table_t* upc_create_hash_table(int64_t nEntries, shared memory_heap_
    return result;
 }
 */	
-	shared hash_table_t *hashtable;
-    shared memory_heap_t memory_heap;
 
-	hashtable = upc_create_hash_table(nKmers, &memory_heap);
-
-
+	shared kmer_t* memory_heap = (shared kmer_t*)upc_all_alloc(nKmers, sizeof(kmer_t));
+	shared bucket_t* hash_table = (shared bucket_t*)upc_all_alloc(nKmers, sizeof(bucket_t));
 
 
 
