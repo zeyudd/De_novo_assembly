@@ -126,7 +126,7 @@ int main(int argc, char *argv[]){
 		int i;
 		for(i = 0; i < nKmers; i++){
 			unpackSequence(heap[i].kmer, unpackedKmer, KMER_LENGTH);			
-			printf("s\n", unpackedKmer);
+			printf("%s\n", unpackedKmer);
 		}
 
 
