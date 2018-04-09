@@ -77,7 +77,7 @@ shared kmer_t* lookup_kmer(shared hash_table_t *hashtable, const unsigned char *
 }
 
 /* Adds a kmer and its extensions in the hash table (note that a memory heap should be preallocated. ) */
-int add_kmer(shared hash_table_t *hashtable, shared kmer_t *heap, int64_t *posInHeap, const unsigned char *kmer, char left_ext, char right_ext)
+int add_kmer(shared hash_table_t *hashtable, shared memory_heap_t *memory_heap, const unsigned char *kmer, char left_ext, char right_ext)
 {
    /* Pack a k-mer sequence appropriately */
    char packedKmer[KMER_PACKED_LENGTH];
@@ -85,19 +85,19 @@ int add_kmer(shared hash_table_t *hashtable, shared kmer_t *heap, int64_t *posIn
    int64_t hashval = hashkmer(hashtable->size, (char*) packedKmer);
 
 
-   int64_t pos = *posInHeap;
+   int64_t pos = memory_heap->posInHeap;
       
    /* Add the contents to the appropriate kmer struct in the heap */
-   upc_memput((heap[pos]).kmer, packedKmer, KMER_PACKED_LENGTH * sizeof(char));
-   (heap[pos]).l_ext = left_ext;
-   (heap[pos]).r_ext = right_ext;
+   upc_memput((memory_heap->heap[pos]).kmer, packedKmer, KMER_PACKED_LENGTH * sizeof(char));
+   (memory_heap->heap[pos]).l_ext = left_ext;
+   (memory_heap->heap[pos]).r_ext = right_ext;
    
    /* Fix the next pointer to point to the appropriate kmer struct */
-   (heap[pos]).next = hashtable->table[hashval].head;
+   (memory_heap->heap[pos]).next = hashtable->table[hashval].head;
    /* Fix the head pointer of the appropriate bucket to point to the current kmer */
-   hashtable->table[hashval].head = &(heap[pos]);
+   hashtable->table[hashval].head = &(memory_heap->heap[pos]);
    
-   *posInHeap++; 
+   memory_heap->posInHeap++; 
    return 0;
 }
 #if 0
@@ -114,7 +114,7 @@ void addKmerToStartList(shared memory_heap_t *memory_heap,shared start_kmer_t **
    new_entry->kmerPtr = ptrToKmer;
    (*startKmersList) = new_entry;
 }
-#endif
+
 /* Deallocation functions */
 int dealloc_heap(memory_heap_t *memory_heap)
 {

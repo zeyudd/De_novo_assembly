@@ -84,15 +84,14 @@ int main(int argc, char *argv[]){
 
 //   	static shared memory_heap_t memory_heap;
 
-	int64_t blocksize = avg_nKmers + 1;
-	shared [blocksize] kmer_t *heaps;
-	heaps = (shared [blocksize] kmer_t *) upc_all_alloc (THREADS, blocksize*sizeof(kmer_t));	    
-   	
-   	if (heaps == NULL) {
-      	fprintf(stderr, "ERROR: Could not allocate memory for the heap!\n");
+	shared [1] memory_heap_t *heaps;
+	heaps = (shared [1] memory_heap_t *) upc_all_alloc (THREADS, sizeof(memory_heap_t));	    
+   	heaps[MYTHREAD].heap = (shared [1] kmer_t *) upc_all_alloc(my_lines_to_read, sizeof(kmer_t));
+   	if (heaps[MYTHREAD].heap == NULL) {
+      	fprintf(stderr, "ERROR: Thread %d could not allocate memory for the heap!\n", MYTHREAD);
       	upc_global_exit(1);
    	}
-	int64_t posInHeap = 0;
+	heaps[MYTHREAD].posInHeap = 0;
 	
 	while (ptr < cur_chars_read) {
     	/* working_buffer[ptr] is the start of the current k-mer                */
@@ -102,7 +101,7 @@ int main(int argc, char *argv[]){
       	right_ext = (char) my_buffer[ptr+KMER_LENGTH+2];
 
       	/* Add k-mer to hash table */
-      	add_kmer(&hashtable, &heap, &posInHeap, &my_buffer[ptr], left_ext, right_ext);
+      	add_kmer(&hashtable, &heaps[MYTHREAD], &my_buffer[ptr], left_ext, right_ext);
 
       	/* Create also a list with the "start" kmers: nodes with F as left (backward) extension */
       	if (left_ext == 'F') {
@@ -115,7 +114,7 @@ int main(int argc, char *argv[]){
 	
 	//  code for graph construction: end     //
 	///////////////////////////////////////////
-	printf("Thread %d done.\n", MYTHREAD);
+	printf("Thread %d done./n");
 	upc_barrier;
 	constrTime += gettime();
 
