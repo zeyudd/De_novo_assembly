@@ -8,7 +8,6 @@
 #include <string.h>
 #include "contig_generation.h"
 
-
 /* Creates a hash table and (pre)allocates memory for the memory heap */
 hash_table_t* create_hash_table(int64_t nEntries, memory_heap_t *memory_heap)
 {

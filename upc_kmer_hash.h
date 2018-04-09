@@ -35,12 +35,12 @@ hash_table_t* create_hash_table(int64_t nEntries, memory_heap_t *memory_heap)
 }
 
 
-hash_table_t* upc_create_hash_table(int64_t nEntries, memory_heap_t *memory_heap)
+shared hash_table_t* upc_create_hash_table(int64_t nEntries, shared memory_heap_t *memory_heap)
 {
    shared hash_table_t *result;
    int64_t n_buckets = nEntries * LOAD_FACTOR;
 
-   result = (hash_table_t*) upc_all_alloc(sizeof(hash_table_t));
+   result = (hash_table_t*) upc_all_alloc(sizeof(hash_table_t), 1);
    result->size = n_buckets;
    result->table = (bucket_t*) upc_all_alloc(n_buckets , sizeof(bucket_t));
    
