@@ -7,8 +7,8 @@
 #include <upc.h>
 #include <upc_io.h>
 
-#include "upc_packingDNAseq.h"
-#include "upc_kmer_hash.h"
+//#include "upc_packingDNAseq.h"
+//#include "upc_kmer_hash.h"
 
 //upc_lock_t heap_lock;
 typedef struct data_t data_t;
