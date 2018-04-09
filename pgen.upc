@@ -72,10 +72,10 @@ int main(int argc, char *argv[]){
     init_LookupTable();
 	/* Creates a hash table and (pre)allocates memory for the memory heap */
 
-	static shared hash_table_t hashtable;
-	int64_t n_buckets = nKmers * LOAD_FACTOR;
-   	hashtable.size = n_buckets;
-   	hashtable.table = (shared bucket_t*) upc_all_alloc(n_buckets , sizeof(bucket_t));	
+	//static shared hash_table_t hashtable;
+	//int64_t n_buckets = nKmers * LOAD_FACTOR;
+   	//hashtable.size = n_buckets;
+   	//hashtable.table = (shared bucket_t*) upc_all_alloc(n_buckets , sizeof(bucket_t));	
 //   	if (hashtable.table == NULL) {
 //      	fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));
 //      	upc_global_exit(1);
@@ -102,7 +102,9 @@ int main(int argc, char *argv[]){
       	right_ext = (char) my_buffer[ptr+KMER_LENGTH+2];
 
       	/* Add k-mer to hash table */
-      	add_kmer(&hashtable, heap, &myPosInHeap, &my_buffer[ptr], left_ext, right_ext);
+      	//add_kmer(&hashtable, heap, &myPosInHeap, &my_buffer[ptr], left_ext, right_ext);
+		add_kmer(heap, &myPosInHeap, &my_buffer[ptr], left_ext, right_ext);
+		
 
       	/* Create also a list with the "start" kmers: nodes with F as left (backward) extension */
       	if (left_ext == 'F') {
@@ -123,7 +125,7 @@ int main(int argc, char *argv[]){
 	//debug
 	int i;
 	for(i = 0; i < my_lines_to_read; i++){
-		printf("Thread %d heap[%d] = %s\n", MYTHREAD, i, heap[MYTHREAD + i*THREADS].kmer);
+		//printf("Thread %d heap[%d] = %s\n", MYTHREAD, i, heap[MYTHREAD + i*THREADS].kmer);
 	}
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 #if 0
