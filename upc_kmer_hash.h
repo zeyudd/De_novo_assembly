@@ -10,7 +10,7 @@
 #include <upc.h>
 
 
-
+#if 0
 /* Auxiliary function for computing hash values */
 int64_t hashseq(int64_t  hashtable_size, char *seq, int size)
 {
@@ -101,6 +101,6 @@ int dealloc_hashtable(hash_table_t *hashtable)
    free(hashtable->table);
    return 0;
 }
-
+#endif
 
 #endif // KMER_HASH_H
