@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
 		for(i = 0; i < THREADS; i++){
 			//printf("data[%d] = (%d, %s)\n", i, data[i].pos, data[i].mer);
 			//printf("data[%d] = (%d, %s)\n", i, data[i].pos, &mers[i*2]);
-			printf("Thread0: data[%d] = (%d)\n", i, data[i].pos);
+			printf("Thread0: data[%d] = (%d, %c, %c)\n", i, data[i].pos, mers[i], mers[i+1]);
 		}
 	}
 #endif
