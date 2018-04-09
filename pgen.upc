@@ -117,6 +117,12 @@ int main(int argc, char *argv[]){
 	upc_barrier;
 	constrTime += gettime();
 
+
+	//debug
+	int i;
+	for(i = 0; i < my_lines_to_read; i++){
+		printf("Thread %d heap[%d] = %s\n", MYTHREAD, i, heaps[MYTHREAD].heap[i].kmer);
+	}
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 #if 0
 
