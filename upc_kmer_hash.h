@@ -127,6 +127,6 @@ int dealloc_hashtable(hash_table_t *hashtable)
    upc_free(hashtable->table);
    return 0;
 }
-
+#endif
 
 #endif // KMER_HASH_H
