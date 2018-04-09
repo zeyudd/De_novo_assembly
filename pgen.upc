@@ -17,6 +17,8 @@ int main(int argc, char *argv[]){
 	/** Declarations **/
 	double inputTime=0.0, constrTime=0.0, traversalTime=0.0;
 
+	kmer_t *cur_kmer_ptr;
+
 	/** Read input **/
 	upc_barrier;
 	inputTime -= gettime();
@@ -138,7 +140,6 @@ int main(int argc, char *argv[]){
 
    	int64_t posInContig, contigID = 0, totBases = 0;
 
-	char cur_contig[MAXIMUM_CONTIG_SIZE], unpackedKmer[KMER_LENGTH+1]; 
 	
 	char output_file_name[50];
 	sprintf(output_file_name, "pgen%d.out", MYTHREAD);
@@ -209,7 +210,7 @@ int main(int argc, char *argv[]){
     	}  
     	fclose(out_file);
   	}
-	  
+
 	//  code for graph traversal and output printing: end     //
 	////////////////////////////////////////////////////////////
 	upc_barrier;
