@@ -100,7 +100,7 @@ int add_kmer(shared hash_table_t *hashtable, shared memory_heap_t *memory_heap, 
    memory_heap->posInHeap++; 
    return 0;
 }
-
+#if 0
 /* Adds a k-mer in the start list by using the memory heap (the k-mer was "just added" in the memory heap at position posInHeap - 1) */
 void addKmerToStartList(shared memory_heap_t *memory_heap,shared start_kmer_t **startKmersList)
 {
@@ -114,7 +114,7 @@ void addKmerToStartList(shared memory_heap_t *memory_heap,shared start_kmer_t **
    new_entry->kmerPtr = ptrToKmer;
    (*startKmersList) = new_entry;
 }
-
+#endif
 /* Deallocation functions */
 int dealloc_heap(memory_heap_t *memory_heap)
 {

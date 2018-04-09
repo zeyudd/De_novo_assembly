@@ -105,7 +105,7 @@ int main(int argc, char *argv[]){
 
       	/* Create also a list with the "start" kmers: nodes with F as left (backward) extension */
       	if (left_ext == 'F') {
-         	addKmerToStartList(&heaps[MYTHREAD], &startKmersList);
+        // 	addKmerToStartList(&heaps[MYTHREAD], &startKmersList);
       	}
 
       	/* Move to the next k-mer in the input working_buffer */
@@ -114,6 +114,7 @@ int main(int argc, char *argv[]){
 	
 	//  code for graph construction: end     //
 	///////////////////////////////////////////
+	printf("Thread %d done.\n", MYTHREAD);
 	upc_barrier;
 	constrTime += gettime();
 
