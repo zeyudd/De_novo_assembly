@@ -76,7 +76,7 @@ int main(int argc, char *argv[]){
 
 	shared [LOAD_FACTOR] bucket_t *hashtable;
 	hashtable = (shared [LOAD_FACTOR] bucket_t *) upc_all_alloc(nKmers, LOAD_FACTOR *sizeof(bucket_t));
-	hashtable_size = nKmers * LOAD_FACTOR;	
+	int64_t hashtable_size = nKmers * LOAD_FACTOR;	
 //   	if (hashtable.table == NULL) {
 //      	fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));
 //      	upc_global_exit(1);
