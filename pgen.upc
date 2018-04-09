@@ -21,6 +21,10 @@ int main(int argc, char *argv[]){
 	int64_t cur_chars_read;
 	char *input_UFX_name;
 	unsigned char *my_buffer;
+	int64_t ptr = 0;
+
+	char cur_contig[MAXIMUM_CONTIG_SIZE], unpackedKmer[KMER_LENGTH+1], left_ext, right_ext;
+	shared start_kmer_t *startKmersList = NULL, *curStartNode;
 
 	kmer_t *cur_kmer_ptr;
 
@@ -69,33 +73,27 @@ int main(int argc, char *argv[]){
     init_LookupTable();
 	/* Creates a hash table and (pre)allocates memory for the memory heap */
 
-	static shared hash_table_t hash_table;
-
-   	static shared memory_heap_t memory_heap;
-	
-    int64_t n_buckets = nKmers * LOAD_FACTOR;
- 
-   	hash_table.size = n_buckets;
-   	hash_table.table = (shared bucket_t*) upc_all_alloc(n_buckets , sizeof(bucket_t));
-	upc_memset(hash_table.table, 0, n_buckets * sizeof(bucket_t));
-   
-   	if (hash_table.table == NULL) {
+	static shared hash_table_t hashtable;
+	int64_t n_buckets = nKmers * LOAD_FACTOR;
+   	hashtable.size = n_buckets;
+   	hashtable.table = (shared bucket_t*) upc_all_alloc(n_buckets , sizeof(bucket_t));	
+   	if (hashtable.table == NULL) {
       	fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));
-      	exit(1);
+      	upc_global_exit(1);
    	}
-   
-   	memory_heap.heap = (shared kmer_t *) upc_all_alloc(nKmers, sizeof(kmer_t));
-   	if (memory_heap.heap == NULL) {
+	upc_memset(hashtable.table, 0, n_buckets * sizeof(bucket_t));  
+
+//   	static shared memory_heap_t memory_heap;
+
+	shared [1] memory_heap_t *heaps;
+	heaps = upc_all_alloc (THREADS, sizeof(memory_heap_t));	    
+   	heaps[MYTHREAD] = (shared kmer_t *) upc_all_alloc(my_lines_to_read, sizeof(kmer_t));
+   	if (heaps[MYTHREAD] == NULL) {
       	fprintf(stderr, "ERROR: Could not allocate memory for the heap!\n");
-      	exit(1);
+      	upc_global_exit(1);
    	}
-	memory_heap.posInHeap = 0;
-
-	int64_t ptr = 0;
-	char cur_contig[MAXIMUM_CONTIG_SIZE], unpackedKmer[KMER_LENGTH+1], left_ext, right_ext;
-	shared start_kmer_t *startKmersList = NULL, *curStartNode;
-
-
+	heaps[MYTHREAD].posInHeap = 0;
+	
 	while (ptr < cur_chars_read) {
     	/* working_buffer[ptr] is the start of the current k-mer                */
      	/* so current left extension is at working_buffer[ptr+KMER_LENGTH+1]    */
@@ -105,22 +103,16 @@ int main(int argc, char *argv[]){
       	right_ext = (char) my_buffer[ptr+KMER_LENGTH+2];
 
       	/* Add k-mer to hash table */
-      	add_kmer(&hash_table, &memory_heap, &my_buffer[ptr], left_ext, right_ext);
+      	add_kmer(&hashtable, &heaps[MYTHREAD], &my_buffer[ptr], left_ext, right_ext);
 
       	/* Create also a list with the "start" kmers: nodes with F as left (backward) extension */
       	if (left_ext == 'F') {
-         	addKmerToStartList(&memory_heap, &startKmersList);
+         	addKmerToStartList(&heaps[MYTHREAD], &startKmersList);
       	}
 
       	/* Move to the next k-mer in the input working_buffer */
       	ptr += LINE_SIZE;
    	}
-
-
-	
-	
-
-
 	
 	//  code for graph construction: end     //
 	///////////////////////////////////////////
@@ -128,7 +120,7 @@ int main(int argc, char *argv[]){
 	constrTime += gettime();
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-
+#if 0
 
 	/** Graph traversal **/
 	traversalTime -= gettime();
@@ -209,7 +201,7 @@ int main(int argc, char *argv[]){
     	}  
     	fclose(output_file);
   	}
-
+#endif
 	//  code for graph traversal and output printing: end     //
 	////////////////////////////////////////////////////////////
 	upc_barrier;
