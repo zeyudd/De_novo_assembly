@@ -33,10 +33,10 @@ int main(int argc, char *argv[]){
 
 
 	data[MYTHREAD].pos = MYTHREAD;
-	data[MYTHREAD].mer[0] = 'A' + MYTHREAD;
-	data[MYTHREAD].mer[1] = '\0';
+	//data[MYTHREAD].mer[0] = 'A' + MYTHREAD;
+	//data[MYTHREAD].mer[1] = '\0';
 
-	printf("data[%d] = (%d, %s)\n", MYTHREAD, data[MYTHREAD].pos, data[MYTHREAD].mer);
+	printf("data[%d] = (%d)\n", MYTHREAD, data[MYTHREAD].pos);
 
 	upc_barrier;
 
