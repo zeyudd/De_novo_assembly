@@ -28,7 +28,7 @@ int main(int argc, char *argv[]){
 
 	data = (shared [1] data_t * )upc_all_alloc(THREADS, sizeof(data_t));
 
-	mers = (shared [2] char *)upc_all_alloc(THREADS, sizeof(char)); 
+	mers = (shared [2] char *)upc_all_alloc(THREADS, 2*sizeof(char)); 
 
 	if(data == NULL){
 		printf("upc_all_alloc failed!\n");
