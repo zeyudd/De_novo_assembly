@@ -56,7 +56,7 @@ int64_t hashkmer(int64_t  hashtable_size, char *seq)
 }
 
 /* Looks up a kmer in the hash table and returns a pointer to that entry */
-shared kmer_t* lookup_kmer(shared bucket_t *hashtable, int64_t hastable_size, const unsigned char *kmer)
+shared kmer_t* lookup_kmer(shared bucket_t *hashtable, int64_t hashtable_size, const unsigned char *kmer)
 {
    char packedKmer[KMER_PACKED_LENGTH];
    packSequence(kmer, (unsigned char*) packedKmer, KMER_LENGTH);

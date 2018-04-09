@@ -47,8 +47,8 @@ struct kmer_t{
 /* Start k-mer data structure */
 typedef struct start_kmer_t start_kmer_t;
 struct start_kmer_t{
-   shared kmer_t *kmerPtr;
-   shared start_kmer_t *next;
+    shared kmer_t *kmerPtr;
+    start_kmer_t *next;
 };
 
 /* Bucket data structure */
