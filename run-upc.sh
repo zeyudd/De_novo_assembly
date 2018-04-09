@@ -3,13 +3,16 @@
 #PBS -l nodes=1:pnn=4:scivybridge
 #PBS -l pmem=2gb
 #PBS -A open
+
 # Parameters
-#P=3				# Number of UPC processes to run
-#INPUT=test		# Path to your input file
+P=3				# Number of UPC processes to run
+INPUT=test		# Path to your input file
+
 cd $PBS_O_WORKDIR
 # Run program
 #./serial ${INPUT}
-upcrun -n 3 ./pgen test
+upcrun -np $P -shared-heap=1G ./pgen ${INPUT}
+
 # Sort contigs in both output files to compare
 #sort serial.out > serial.sorted
 #sort pgen.out > pgen.sorted
