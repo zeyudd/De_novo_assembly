@@ -40,11 +40,11 @@ int main(int argc, char *argv[]){
 
 	upc_barrier;
 
-#if 0
+#if 1
 	if(MYTHREAD == 0){
 		int i;
 		for(i = 0; i < THREADS; i++){
-			printf("data[%d] = (%d, %s)\n", i, data[i].pos, data[i].mer);
+			printf("data[%d] = (%d)\n", i, data[i].pos);
 		}
 	}
 #endif
