@@ -7,8 +7,8 @@
 #include <upc.h>
 #include <upc_io.h>
 
-#include "packingDNAseq.h"
-#include "kmer_hash.h"
+#include "upc_packingDNAseq.h"
+#include "upc_kmer_hash.h"
 
 
 int main(int argc, char *argv[]){
