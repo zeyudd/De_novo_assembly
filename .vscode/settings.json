@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "__locale": "cpp",
-        "*.upc": "c"
+        "*.upc": "c",
+        "time.h": "c"
     }
 }

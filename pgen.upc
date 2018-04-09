@@ -26,6 +26,7 @@ int main(int argc, char *argv[]){
 	char cur_contig[MAXIMUM_CONTIG_SIZE], unpackedKmer[KMER_LENGTH+1], left_ext, right_ext;
 	start_kmer_t *startKmersList = NULL, *curStartNode;
 
+	unpackedKmer[KMER_LENGTH] = '\0';
 	kmer_t *cur_kmer_ptr;
 	upc_file_t *input_file;
 
@@ -121,10 +122,11 @@ int main(int argc, char *argv[]){
 
 
 	//debug
-	if(MYTHREAD == 2){
+	if(MYTHREAD == 0){
 		int i;
-		for(i = 0; i < my_lines_to_read; i++){
-			printf("Thread %d heap[%d] = %c%c\n", MYTHREAD, i, heap[MYTHREAD + i*THREADS].l_ext, heap[MYTHREAD + i*THREADS].r_ext);
+		for(i = 0; i < nKmers; i++){
+			unpackSequence(heap[i].kmer, unpackedKmer, KMER_LENGTH);			
+			printf("s\n", unpackedKmer);
 		}
 
 

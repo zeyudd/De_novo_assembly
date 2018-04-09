@@ -1,5 +1,5 @@
-#ifndef CONTIG_GENERATION_H
-#define CONTIG_GENERATION_H
+#ifndef UPC_CONTIG_GENERATION_H
+#define UPC_CONTIG_GENERATION_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -111,4 +111,4 @@ int64_t getNumKmersInUFX(const char *filename) {
    return numKmers;
 }
 
-#endif // CONTIG_GENERATION_H
+#endif // UPC_CONTIG_GENERATION_H
