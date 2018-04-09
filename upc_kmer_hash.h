@@ -9,6 +9,29 @@
 #include "upc_contig_generation.h"
 #include <upc.h>
 
+shared hash_table_t* upc_create_hash_table(int64_t nEntries, shared memory_heap_t *memory_heap)
+{
+   shared hash_table_t *result; /*
+   int64_t n_buckets = nEntries * LOAD_FACTOR;
+
+   result = (hash_table_t*) malloc(sizeof(hash_table_t));
+   result->size = n_buckets;
+   result->table = (bucket_t*) calloc(n_buckets , sizeof(bucket_t));
+   
+   if (result->table == NULL) {
+      fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));
+      exit(1);
+   }
+   
+   memory_heap->heap = (kmer_t *) malloc(nEntries * sizeof(kmer_t));
+   if (memory_heap->heap == NULL) {
+      fprintf(stderr, "ERROR: Could not allocate memory for the heap!\n");
+      exit(1);
+   }
+   memory_heap->posInHeap = 0;*/
+   
+   return result;
+}
 
 #if 0
 /* Auxiliary function for computing hash values */
