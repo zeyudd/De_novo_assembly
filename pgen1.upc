@@ -39,6 +39,7 @@ int main(int argc, char *argv[]){
 	printf("data[%d] = (%d)\n", MYTHREAD, data[MYTHREAD].pos);
 
 	upc_barrier;
+	sleep(1);
 
 #if 1
 	if(MYTHREAD == 0){
