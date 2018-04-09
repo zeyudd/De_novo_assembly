@@ -27,7 +27,6 @@ int main(int argc, char *argv[]){
 	shared start_kmer_t *startKmersList = NULL, *curStartNode;
 
 	kmer_t *cur_kmer_ptr;
-
 	upc_file_t *input_file;
 
 	/** Read input **/
@@ -85,7 +84,7 @@ int main(int argc, char *argv[]){
 
 //   	static shared memory_heap_t memory_heap;
 
-	shared [1] memory_heap_t *heaps;
+	shared memory_heap_t *heaps;
 	heaps = upc_all_alloc (THREADS, sizeof(memory_heap_t));	    
    	heaps[MYTHREAD] = (shared kmer_t *) upc_all_alloc(my_lines_to_read, sizeof(kmer_t));
    	if (heaps[MYTHREAD] == NULL) {
