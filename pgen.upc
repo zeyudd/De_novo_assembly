@@ -124,8 +124,11 @@ int main(int argc, char *argv[]){
 
 	//debug
 	int i;
+	unsigned char km[KMER_LENGTH]
 	for(i = 0; i < my_lines_to_read; i++){
-		printf("Thread %d heap[%d] = %c\n", MYTHREAD, i, heap[MYTHREAD + i*THREADS].kmer[0]);
+		unpackSequence(heap[MYTHREAD + i*THREADS].kmer[0], km, KMER_LENGTH);
+		km[KMER_LENGTH - 1] = 0;
+		printf("Thread %d heap[%d] = %c\n", MYTHREAD, i, km);
 	}
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 #if 0
