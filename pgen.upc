@@ -76,22 +76,23 @@ int main(int argc, char *argv[]){
 	int64_t n_buckets = nKmers * LOAD_FACTOR;
    	hashtable.size = n_buckets;
    	hashtable.table = (shared bucket_t*) upc_all_alloc(n_buckets , sizeof(bucket_t));	
-   	if (hashtable.table == NULL) {
-      	fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));
-      	upc_global_exit(1);
-   	}
+//   	if (hashtable.table == NULL) {
+//      	fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));
+//      	upc_global_exit(1);
+//   	}
 	upc_memset(hashtable.table, 0, n_buckets * sizeof(bucket_t));  
 
 //   	static shared memory_heap_t memory_heap;
 
-	shared [1] memory_heap_t *heaps;
-	heaps = (shared [1] memory_heap_t *) upc_all_alloc (THREADS, sizeof(memory_heap_t));	    
-   	heaps[MYTHREAD].heap = (shared [1] kmer_t *) upc_all_alloc(my_lines_to_read, sizeof(kmer_t));
-   	if (heaps[MYTHREAD].heap == NULL) {
-      	fprintf(stderr, "ERROR: Thread %d could not allocate memory for the heap!\n", MYTHREAD);
-      	upc_global_exit(1);
-   	}
-	heaps[MYTHREAD].posInHeap = 0;
+	shared [1] kmer_t *heap;
+	heap = (shared [1] kmer_t *) upc_all_alloc (nKmers, sizeof(kmer_t));
+
+   	
+//   	if (heaps[MYTHREAD].heap == NULL) {
+//      	fprintf(stderr, "ERROR: Thread %d could not allocate memory for the heap!\n", MYTHREAD);
+//      	upc_global_exit(1);
+//   	}
+	int64_t myPosInHeap = MYTHREAD;
 	
 	while (ptr < cur_chars_read) {
     	/* working_buffer[ptr] is the start of the current k-mer                */
@@ -101,7 +102,7 @@ int main(int argc, char *argv[]){
       	right_ext = (char) my_buffer[ptr+KMER_LENGTH+2];
 
       	/* Add k-mer to hash table */
-      	add_kmer(&hashtable, &heaps[MYTHREAD], &my_buffer[ptr], left_ext, right_ext);
+      	add_kmer(&hashtable, &heap, &myPosInHeap, &my_buffer[ptr], left_ext, right_ext);
 
       	/* Create also a list with the "start" kmers: nodes with F as left (backward) extension */
       	if (left_ext == 'F') {
@@ -122,7 +123,7 @@ int main(int argc, char *argv[]){
 	//debug
 	int i;
 	for(i = 0; i < my_lines_to_read; i++){
-		printf("Thread %d heap[%d] = %s\n", MYTHREAD, i, heaps[MYTHREAD].heap[i].kmer);
+		printf("Thread %d heap[%d] = %s\n", MYTHREAD, i, heap[MYTHREAD + i*THREADS].kmer);
 	}
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 #if 0
