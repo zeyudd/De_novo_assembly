@@ -93,8 +93,8 @@ int main(int argc, char *argv[]){
      	/* so current left extension is at working_buffer[ptr+KMER_LENGTH+1]    */
      	/* and current right extension is at working_buffer[ptr+KMER_LENGTH+2]  */
 
-      	left_ext = (char) working_buffer[ptr+KMER_LENGTH+1];
-      	right_ext = (char) working_buffer[ptr+KMER_LENGTH+2];
+      	left_ext = (char) my_buffer[ptr+KMER_LENGTH+1];
+      	right_ext = (char) my_buffer[ptr+KMER_LENGTH+2];
 
       	/* Add k-mer to hash table */
       	add_kmer(&hashtable, &memory_heap, &my_buffer[ptr], left_ext, right_ext);
