@@ -125,7 +125,7 @@ int main(int argc, char *argv[]){
 	//debug
 	int i;
 	for(i = 0; i < my_lines_to_read; i++){
-		printf("Thread %d heap[%d] = %s\n", MYTHREAD, i, heap[MYTHREAD + i*THREADS].kmer);
+		printf("Thread %d heap[%d] = %c\n", MYTHREAD, i, heap[MYTHREAD + i*THREADS].kmer[0]);
 	}
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 #if 0
