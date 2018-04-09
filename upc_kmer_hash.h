@@ -116,13 +116,13 @@ void addKmerToStartList(shared memory_heap_t *memory_heap,shared start_kmer_t **
 /* Deallocation functions */
 int dealloc_heap(memory_heap_t *memory_heap)
 {
-   free(memory_heap->heap);
+   upc_free(memory_heap->heap);
    return 0;
 }
 
 int dealloc_hashtable(hash_table_t *hashtable)
 {
-   free(hashtable->table);
+   upc_free(hashtable->table);
    return 0;
 }
 
