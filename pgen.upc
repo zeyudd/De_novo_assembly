@@ -90,6 +90,9 @@ int main(int argc, char *argv[]){
 
 	int64_t ptr = 0;
 	char cur_contig[MAXIMUM_CONTIG_SIZE], unpackedKmer[KMER_LENGTH+1], left_ext, right_ext;
+	shared start_kmer_t *startKmersList = NULL, *curStartNode;
+
+
 	while (ptr < cur_chars_read) {
     	/* working_buffer[ptr] is the start of the current k-mer                */
      	/* so current left extension is at working_buffer[ptr+KMER_LENGTH+1]    */
@@ -103,7 +106,7 @@ int main(int argc, char *argv[]){
 
       	/* Create also a list with the "start" kmers: nodes with F as left (backward) extension */
       	if (left_ext == 'F') {
-        // 	addKmerToStartList(&memory_heap, &startKmersList);
+         	addKmerToStartList(&memory_heap, &startKmersList);
       	}
 
       	/* Move to the next k-mer in the input working_buffer */
