@@ -19,9 +19,10 @@ int main(int argc, char *argv[]){
 	/** Read input **/
 	upc_barrier;
 	inputTime -= gettime();
+
 	///////////////////////////////////////////
 	//   code for input file reading : begin //
-	///////////////////////////////////////////
+	
 	char * input_UFX_name = argv[1];
 	int64_t nKmers = getNumKmersInUFX(input_UFX_name);
 	
@@ -35,7 +36,7 @@ int main(int argc, char *argv[]){
 	int64_t my_read_offset = my_lines_to_skip * LINE_SIZE;
 
 	unsigned char* my_buffer = 
-	  (unsigned char*) malloc((my_read_size) * sizeof(unsigned char)); // local buffer
+	  (unsigned char*) malloc((my_read_size) * sizeof(unsigned char));
 	
 	upc_file_t *input_file;
 	input_file = upc_all_fopen(input_UFX_name, UPC_RDONLY | UPC_INDIVIDUAL_FP, 0, NULL);
@@ -44,11 +45,10 @@ int main(int argc, char *argv[]){
 	                                             UPC_IN_ALLSYNC | UPC_OUT_ALLSYNC);
 	upc_all_fclose(input_file);
 	
-	printf("Reading Finished on Thread#%d of %d threads. Read %d kMers. Skip %d kMers.\n", 
-	MYTHREAD, THREADS, my_lines_to_read, my_lines_to_skip);
+	printf("Thread#%d of %d: read %d kMers, skip %d kMers.\n", 
+	  MYTHREAD, THREADS, my_lines_to_read, my_lines_to_skip);
 	
-
-	///////////////////////////////////////////
+	
 	//   code for input file reading : end   //
 	///////////////////////////////////////////
 	upc_barrier;
@@ -57,7 +57,96 @@ int main(int argc, char *argv[]){
 	/** Graph construction **/
 	constrTime -= gettime();
 	///////////////////////////////////////////
-	// Your code for graph construction here //
+	//  code for graph construction: begin   //
+	
+    /* Initialize lookup table that will be used for the DNA packing routines */
+    init_LookupTable();
+	
+	shared hash_table_t *hashtable;
+    shared memory_heap_t memory_heap;
+
+	hashtable = upc_create_hash_table(nKmers, &memory_heap);
+
+
+
+
+
+
+
+
+
+
+#if 0
+	int64_t n = lines_to_read; // total kmers processed by the current thread
+	// generate hash table and heap
+	shared int64_t* next_index = (shared int64_t*)upc_all_alloc(nKmers, sizeof(int64_t));
+    shared kmer_t* memory_heap = (shared kmer_t*)upc_all_alloc(nKmers, sizeof(kmer_t)); 
+  
+    // initialize hash_table
+   int64_t tablesize = nKmers * LOAD_FACTOR;
+   shared int64_t* hash_table = (shared int64_t*)upc_all_alloc(tablesize, sizeof(int64_t));
+   int64_t i;
+   upc_forall(i=0; i<tablesize; i++; &hash_table[i]) // initial hash table
+    hash_table[i] = -1;
+   upc_forall(i=0; i<nKmers; i++; &next_index[i]) // initial next index
+    next_index[i] = -1;
+  
+   upc_barrier; // need to synchronize before we actually start!
+  
+   int64_t k = lines_to_ignore; // global kmer index
+   int64_t ptr = 0;
+  
+  
+  
+	while (ptr < cur_chars_read) {
+	
+    char left_ext = (char) buffer[ptr+KMER_LENGTH+1];
+    char right_ext = (char) buffer[ptr+KMER_LENGTH+2];
+
+    /* Add k-mer to hash table */
+    add_kmer(next_index, k, hash_table, tablesize, memory_heap, &buffer[ptr], left_ext, right_ext);
+    
+    /*
+    //// test whether it is inserted to the hash_table
+    {
+      char packedKmer[KMER_PACKED_LENGTH];
+      packSequence(&buffer[ptr], (unsigned char*) packedKmer, KMER_LENGTH);
+      int64_t hashval = hashkmer(tablesize, (char*) packedKmer);
+      int64_t p = hash_table[hashval];
+      while(p != k && p != -1) {
+        p = next_index[p];
+      }
+      if(p != k) {
+        printf("<ADD Failure!> Cannot find the kmer index [%d] in the hash_table on Thread#%d!\n", k, MYTHREAD);
+      }
+      
+      if(ok==1) {
+      
+      kmer_t tmp_kmer;
+      upc_memget(& tmp_kmer, &memory_heap[k], sizeof(kmer_t));
+      
+      
+      char unpackedKmer[KMER_LENGTH+1];
+      unpackSequence((unsigned char*) tmp_kmer.kmer,  (unsigned char*) unpackedKmer, KMER_LENGTH);
+      if(memcmp(unpackedKmer, &buffer[ptr], KMER_LENGTH * sizeof(char)) != 0) {
+        printf("<Fetch ERROR> the fetched kmer cannot be correctly recovered on Thread#%d!\n", MYTHREAD);
+      }
+
+      }
+    }
+    
+    */
+    /* Move to the next k-mer in the input buffer */
+    ptr += LINE_SIZE;
+    k ++; 
+    
+    //i++;
+  }
+#endif
+
+
+	
+	//  code for graph construction: end     //
 	///////////////////////////////////////////
 	upc_barrier;
 	constrTime += gettime();
@@ -65,7 +154,7 @@ int main(int argc, char *argv[]){
 	/** Graph traversal **/
 	traversalTime -= gettime();
 	////////////////////////////////////////////////////////////
-	// Your code for graph traversal and output printing here //
+	// code for graph traversal and output printing: begin    //
 	// Save your output to "pgen.out"                         //
 	////////////////////////////////////////////////////////////
 	upc_barrier;
