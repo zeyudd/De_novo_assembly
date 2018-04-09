@@ -5,14 +5,14 @@
 #PBS -A open
 
 # Parameters
-P=3				# Number of UPC processes to run
-INPUT=test		# Path to your input file
+#P=3				# Number of UPC processes to run
+#INPUT=test		# Path to your input file
 
 cd $PBS_O_WORKDIR
 
 # Run program
 #./serial ${INPUT}
-upcrun -n $P -shared-heap 1G ./pgen ${INPUT}
+upcrun -n 3 ./pgen test
 
 # Sort contigs in both output files to compare
 #sort serial.out > serial.sorted
