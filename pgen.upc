@@ -64,7 +64,7 @@ int main(int argc, char *argv[]){
 
 
 	/* Creates a hash table and (pre)allocates memory for the memory heap */
-
+/*
 shared hash_table_t* upc_create_hash_table(int64_t nEntries, shared memory_heap_t *memory_heap)
 {
    shared hash_table_t *result;
@@ -88,7 +88,7 @@ shared hash_table_t* upc_create_hash_table(int64_t nEntries, shared memory_heap_
    
    return result;
 }
-	
+*/	
 	shared hash_table_t *hashtable;
     shared memory_heap_t memory_heap;
 
