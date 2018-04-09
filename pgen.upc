@@ -186,9 +186,9 @@ int main(int argc, char *argv[]){
   	//printf("Traversal Finished on Thread#%d of %d threads.\n", MYTHREAD, THREADS);
 		
 	if(MYTHREAD == 0) {
-	  upc_free(memory_heap);
-	  upc_free(next_index);
-	  upc_free(hash_table);
+	  //upc_free(memory_heap);
+	  //upc_free(next_index);
+	  //upc_free(hash_table);
 	}
 	
 	
