@@ -123,7 +123,7 @@ int main(int argc, char *argv[]){
 
 
 	//debug
-	if(MYTHREAD == 0){
+	if(MYTHREAD == 2){
 		int i;
 		for(i = 0; i < my_lines_to_read; i++){
 			printf("Thread %d heap[%d] = %c%c\n", MYTHREAD, i, heap[MYTHREAD + i*THREADS].l_ext, heap[MYTHREAD + i*THREADS].r_ext);
