@@ -97,7 +97,7 @@ int main(int argc, char *argv[]){
       	right_ext = (char) working_buffer[ptr+KMER_LENGTH+2];
 
       	/* Add k-mer to hash table */
-      	add_kmer(hashtable, &memory_heap, &my_buffer[ptr], left_ext, right_ext);
+      	add_kmer(&hashtable, &memory_heap, &my_buffer[ptr], left_ext, right_ext);
 
       	/* Create also a list with the "start" kmers: nodes with F as left (backward) extension */
       	if (left_ext == 'F') {

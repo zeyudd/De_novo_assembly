@@ -54,13 +54,13 @@ int64_t hashkmer(int64_t  hashtable_size, char *seq)
 }
 
 /* Looks up a kmer in the hash table and returns a pointer to that entry */
-kmer_t* lookup_kmer(hash_table_t *hashtable, const unsigned char *kmer)
+shared kmer_t* lookup_kmer(shared hash_table_t *hashtable, const unsigned char *kmer)
 {
    char packedKmer[KMER_PACKED_LENGTH];
    packSequence(kmer, (unsigned char*) packedKmer, KMER_LENGTH);
    int64_t hashval = hashkmer(hashtable->size, (char*) packedKmer);
    bucket_t cur_bucket;
-   kmer_t *result;
+   shared kmer_t *result;
    
    cur_bucket = hashtable->table[hashval];
    result = cur_bucket.head;
@@ -75,7 +75,7 @@ kmer_t* lookup_kmer(hash_table_t *hashtable, const unsigned char *kmer)
 }
 
 /* Adds a kmer and its extensions in the hash table (note that a memory heap should be preallocated. ) */
-int add_kmer(hash_table_t *hashtable, memory_heap_t *memory_heap, const unsigned char *kmer, char left_ext, char right_ext)
+int add_kmer(shared hash_table_t *hashtable, shared memory_heap_t *memory_heap, const unsigned char *kmer, char left_ext, char right_ext)
 {
    /* Pack a k-mer sequence appropriately */
    char packedKmer[KMER_PACKED_LENGTH];
@@ -98,9 +98,9 @@ int add_kmer(hash_table_t *hashtable, memory_heap_t *memory_heap, const unsigned
    
    return 0;
 }
-
+#if 0
 /* Adds a k-mer in the start list by using the memory heap (the k-mer was "just added" in the memory heap at position posInHeap - 1) */
-void addKmerToStartList(memory_heap_t *memory_heap, start_kmer_t **startKmersList)
+void addKmerToStartList(shared memory_heap_t *memory_heap,shared start_kmer_t **startKmersList)
 {
    start_kmer_t *new_entry;
    kmer_t *ptrToKmer;
@@ -112,7 +112,7 @@ void addKmerToStartList(memory_heap_t *memory_heap, start_kmer_t **startKmersLis
    new_entry->kmerPtr = ptrToKmer;
    (*startKmersList) = new_entry;
 }
-
+#endif
 /* Deallocation functions */
 int dealloc_heap(memory_heap_t *memory_heap)
 {
