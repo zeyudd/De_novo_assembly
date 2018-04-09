@@ -10,10 +10,10 @@
 #include "upc_packingDNAseq.h"
 #include "upc_kmer_hash.h"
 
-upc_lock_t heap_lock;
+//upc_lock_t heap_lock;
 int main(int argc, char *argv[]){
 
-	heap_lock = upc_all_lock_alloc();
+	//heap_lock = upc_all_lock_alloc();
 	/** Declarations **/
 	double inputTime=0.0, constrTime=0.0, traversalTime=0.0;
 
