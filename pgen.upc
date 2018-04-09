@@ -208,7 +208,7 @@ int main(int argc, char *argv[]){
         	fprintf(output_file, "%s\n", cur_contig);
        		fclose(in_file);
     	}  
-    	fclose(out_file);
+    	fclose(output_file);
   	}
 
 	//  code for graph traversal and output printing: end     //
