@@ -40,20 +40,20 @@ struct kmer_t{
    char kmer[KMER_PACKED_LENGTH];
    char l_ext;
    char r_ext;
-   kmer_t *next;
+   shared kmer_t *next;
 };
 
 /* Start k-mer data structure */
 typedef struct start_kmer_t start_kmer_t;
 struct start_kmer_t{
-   kmer_t *kmerPtr;
-   start_kmer_t *next;
+   shared kmer_t *kmerPtr;
+   shared start_kmer_t *next;
 };
 
 /* Bucket data structure */
 typedef struct bucket_t bucket_t;
 struct bucket_t{
-   kmer_t *head;          // Pointer to the first entry of that bucket
+   shared kmer_t *head;          // Pointer to the first entry of that bucket
 };
 
 /* Hash table data structure */
