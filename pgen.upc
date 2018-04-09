@@ -73,6 +73,7 @@ int main(int argc, char *argv[]){
  
    	hash_table.size = n_buckets;
    	hash_table.table = (shared bucket_t*) upc_all_alloc(n_buckets , sizeof(bucket_t));
+	upc_memset(hash_table.table, 0, n_buckets * sizeof(bucket_t));
    
    	if (hash_table.table == NULL) {
       	fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));

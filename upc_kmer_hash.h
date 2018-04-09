@@ -84,7 +84,7 @@ int add_kmer(shared hash_table_t *hashtable, shared memory_heap_t *memory_heap, 
    int64_t pos = memory_heap->posInHeap;
    
    /* Add the contents to the appropriate kmer struct in the heap */
-   memcpy((memory_heap->heap[pos]).kmer, packedKmer, KMER_PACKED_LENGTH * sizeof(char));
+   upc_memput((memory_heap->heap[pos]).kmer, packedKmer, KMER_PACKED_LENGTH * sizeof(char));
    (memory_heap->heap[pos]).l_ext = left_ext;
    (memory_heap->heap[pos]).r_ext = right_ext;
    
