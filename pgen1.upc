@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
 			//printf("data[%d] = (%d, %s)\n", i, data[i].pos, data[i].mer);
 			//printf("data[%d] = (%d, %s)\n", i, data[i].pos, &mers[i*2]);
 			//printf("Thread0: data[%d] = (%d, %c, %c)\n", i, data[i].pos, mers[2*i], mers[2*i+1]);
-			printf("Thread0: data[%d] = (%d, %c, %c)\n", i, data[i].pos, data[i].mer[0], data[i].mer[1]);
+			printf("Thread0: data[%d] = (%d, %c, %c)\n", i, data[i].pos, *data[i].mer, *(data[i].mer+1));
 		}
 	}
 #endif
