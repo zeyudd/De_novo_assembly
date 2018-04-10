@@ -31,7 +31,7 @@ int main(int argc, char *argv[]){
 	packed_kmer_buf[KMER_PACKED_LENGTH] = '\0';
 
 	int64_t cur_kmer_ptr;
-    start_kmer_t *startKmersList = NULL, *curStartNode;
+
 
 	upc_file_t *input_file;
 
