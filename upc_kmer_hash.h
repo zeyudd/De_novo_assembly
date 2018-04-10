@@ -65,7 +65,7 @@ int add_kmer(shared kmer_t *kmer_i, shared [KMER_PACKED_LENGTH] char *kmer_c, in
     int i;
     printf("THREAD%d: kmer_c = ", MYTHREAD);
     for(i = 0; i< KMER_PACKED_LENGTH; i++){
-        printf("%c", kmer_c[pos*KMER_PACKED_LENGTH + 1]);
+        printf("%d", (kmer_c[pos*KMER_PACKED_LENGTH + i] == packedKmer[i])? 1:0);
     }
     printf("\n");
 
