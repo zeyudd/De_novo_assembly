@@ -62,13 +62,14 @@ int add_kmer(shared kmer_t *kmer_i, shared [KMER_PACKED_LENGTH] char *kmer_c, in
       
     /* Add the contents to the appropriate kmer struct in the heap */ 
     upc_memput(&kmer_c[pos * KMER_PACKED_LENGTH], packedKmer, KMER_PACKED_LENGTH * sizeof(char));
+    /*
     int i;
     printf("THREAD%d: kmer_c = ", MYTHREAD);
     for(i = 0; i< KMER_PACKED_LENGTH; i++){
         printf("%d", (kmer_c[pos*KMER_PACKED_LENGTH + i] == packedKmer[i])? 1:0);
     }
     printf("\n");
-
+    */
     kmer_i[pos].l_ext = left_ext;
     kmer_i[pos].r_ext = right_ext;
     /* Fix the next pointer to point to the appropriate kmer struct */
@@ -79,7 +80,7 @@ int add_kmer(shared kmer_t *kmer_i, shared [KMER_PACKED_LENGTH] char *kmer_c, in
     char unpackedKmer[KMER_LENGTH+1];
     unpackedKmer[KMER_LENGTH] = '\0';
     //unpackSequence(&kmer_c[pos*KMER_LENGTH], unpackedKmer, KMER_LENGTH);
-    unpackSequence(packedKmer, unpackedKmer, KMER_LENGTH);
+    unpackSequence((unsigned char *)&kmer_c[pos * KMER_PACKED_LENGTH], unpackedKmer, KMER_LENGTH);
     printf("THREAD%d: packed kmer %s, pos=%d\n", MYTHREAD, unpackedKmer, pos);
     *posInHeap += THREADS; 
     return 0;
