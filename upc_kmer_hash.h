@@ -50,11 +50,13 @@ shared kmer_t* lookup_kmer(shared bucket_t *hashtable, int64_t hashtable_size, c
 
 /* Adds a kmer and its extensions in the hash table (note that a memory heap should be preallocated. ) */
 int add_kmer(shared bucket_t *hashtable, int64_t hashtable_size, shared kmer_t *heap, int64_t *posInHeap, 
-            shared [KMER_PACKED_LENGTH] char *heap_kmers, const unsigned char *kmer, char left_ext, char right_ext)
+            shared [KMER_PACKED_LENGTH] char *heap_kmers, const unsigned char *kmer_to_add, char left_ext, char right_ext)
 {
    /* Pack a k-mer sequence appropriately */
-   char packedKmer[KMER_PACKED_LENGTH];
-   packSequence(kmer, (unsigned char*) packedKmer, KMER_LENGTH);
+   char packedKmer[KMER_PACKED_LENGTH+1];
+   packedKmer[KMER_PACKED_LENGTH] = '\0';
+   packSequence(kmer_to_add, (unsigned char*) packedKmer, KMER_LENGTH);
+   
    int64_t hashval = hashkmer(hashtable_size, (char*) packedKmer);
 
    int64_t pos = *posInHeap;
@@ -69,7 +71,7 @@ int add_kmer(shared bucket_t *hashtable, int64_t hashtable_size, shared kmer_t *
    heap[pos].next_id = hashtable[hashval].head;
    /* Fix the head pointer of the appropriate bucket to point to the current kmer */
    hashtable[hashval].head = pos;
-   
+   printf("THREAD%d: packed kmer %s, pos=%d\n", MYTHREAD, packedKmer, pos);
    *posInHeap += THREADS; 
    return 0;
 }
