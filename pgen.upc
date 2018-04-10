@@ -207,7 +207,7 @@ int main(int argc, char *argv[]){
      	cur_contig[posInContig] = '\n';
 		cur_contig[posInContig+1] = '\0';
 
-		upc_all_fwrite_local(outpu_file, cur_contig, sizeof(char), strlen(cur_contig), UPC_IN_ALLSYNC | UPC_OUT_ALLSYNC); 
+		upc_all_fwrite_local(output_file, cur_contig, sizeof(char), strlen(cur_contig), UPC_IN_ALLSYNC | UPC_OUT_ALLSYNC); 
 		// printf("THREAD %d: start kmer = %s\t config = %s\n", MYTHREAD, kmer_buf, cur_contig);
 
       	contigID++;
@@ -216,7 +216,7 @@ int main(int argc, char *argv[]){
 		#endif
       	curStartNode = curStartNode->next;
    }
-	
+	upc_all_fclose(output_file);
 #if 0	
 	// close the output file
 	fclose(output_file);
