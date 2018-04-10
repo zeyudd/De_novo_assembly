@@ -199,7 +199,9 @@ int main(int argc, char *argv[]){
        	  	cur_contig[posInContig] = right_ext;
        	  	posInContig++;
        	  	/* At position cur_contig[posInContig-KMER_LENGTH] starts the last k-mer in the current contig */
+			printf(">>>DEBUG1<<<\n");
        	  	cur_kmer_ptr = lookup_kmer(kmer_char, kmer_info, hashtable, hashlen, (const unsigned char *) &cur_contig[posInContig-KMER_LENGTH]);
+			printf(">>>DEBUG2<<<\n");
 			if(cur_kmer_ptr == -1){
 				break;
 			}
