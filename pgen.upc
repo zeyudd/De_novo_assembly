@@ -132,9 +132,15 @@ int main(int argc, char *argv[]){
 	if(MYTHREAD == 0){
 		int i;
 		for(i = 0; i < nKmers; i++){
+			char buffer[KMER_LENGTH + 1];
+			int j;
+			for(j = 0; j < KMER_LENGTH; j++)
+				buffer[j] = 'X';
+
+			buffer[KMER_LENGTH] = '\0';
 			const unsigned char *k = (const unsigned char *)&heap_kmers[i*KMER_PACKED_LENGTH];
-			unpackSequence(k, unpackedKmer, KMER_LENGTH);			
-			printf("%c, %c, %s\n", heap[i].l_ext, heap[i].r_ext, unpackedKmer);
+			unpackSequence(k, buffer, KMER_LENGTH);			
+			printf("%c, %c, %s\n", heap[i].l_ext, heap[i].r_ext, buffer);
 		}
 	}
 	#endif
