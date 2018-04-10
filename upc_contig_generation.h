@@ -54,7 +54,7 @@ struct start_kmer_t{
 /* Bucket data structure */
 typedef struct bucket_t bucket_t;
 struct bucket_t{
-   shared kmer_t *head;          // Pointer to the first entry of that bucket
+   int16_t head;          // Pointer to the first entry of that bucket
 };
 
 /* Hash table data structure */
