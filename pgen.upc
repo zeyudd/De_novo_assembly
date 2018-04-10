@@ -133,15 +133,17 @@ int main(int argc, char *argv[]){
 		int i;
 		for(i = 0; i < nKmers; i++){
 			char buffer[KMER_LENGTH + 1];
+			char packed_buf[KMER_PACKED_LENGTH+1];
+			packed_buf[KMER_PACKED_LENGTH] = '\0';
 			int j;
 			for(j = 0; j < KMER_LENGTH; j++)
 				buffer[j] = 'X';
 
 			buffer[KMER_LENGTH] = '\0';
-			shared char *k = (shared char *)(kmer_char);
-			k  += i;
-			printf("pos %d, addr = %p \n", i, k);
-			unpackSequence(k, buffer, KMER_LENGTH);			
+			shared char *k = (shared char *)(kmer_char + i*KMER_PACKED_LENGTH);
+			upc_memget(packed_buf, k, KMER_PACKED_LENGTH);
+			printf("pos %d, addr = %p,\t", i, k);
+			unpackSequence(packed_buf, buffer, KMER_LENGTH);			
 			printf("%d\t %c%c %s, next = %d\n",i, kmer_info[i].l_ext, kmer_info[i].r_ext, buffer, kmer_info[i].next);
 		}
 	}
