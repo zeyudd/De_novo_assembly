@@ -93,7 +93,7 @@ int main(int argc, char *argv[]){
 //   	}
 	int i;
 	upc_forall(i = 0; i < hashlen; i++; &hashtable[i]){
-		hashtable[i] = -1;
+		hashtable[i].head = -1;
 	}
 	//upc_memset(hashtable, 0, nKmers * LOAD_FACTOR * sizeof(bucket_t));  
 
