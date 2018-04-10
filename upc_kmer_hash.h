@@ -18,6 +18,7 @@ int64_t hashseq(int64_t  hashtable_size, char *seq, int size)
       hashval = seq[i] +  (hashval << 5) + hashval;
    }
    
+   
    int64_t ret = hashval % hashtable_size;
    return (ret < 0)? ret + hashtable_size : ret;
 }
