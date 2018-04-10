@@ -66,7 +66,7 @@ int add_kmer(shared bucket_t *hashtable, int64_t hashtable_size, shared kmer_t *
    heap[pos].r_ext = right_ext;
    
    /* Fix the next pointer to point to the appropriate kmer struct */
-   heap[pos].next = hashtable[hashval].head;
+   heap[pos].next_id = hashtable[hashval].head;
    /* Fix the head pointer of the appropriate bucket to point to the current kmer */
    hashtable[hashval].head = pos;
    
