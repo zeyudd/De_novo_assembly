@@ -166,7 +166,6 @@ int main(int argc, char *argv[]){
 	//  Save your output to "pgen.out"                        //
 	
 
-   	int64_t posInContig, contigID = 0, totBases = 0;
 
 	
 	//char output_file_name[50];
