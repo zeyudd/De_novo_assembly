@@ -62,7 +62,7 @@ int add_kmer(shared kmer_t *kmer_i, shared [KMER_PACKED_LENGTH] char *kmer_c, in
       
     /* Add the contents to the appropriate kmer struct in the heap */ 
     printf("THREAD %d packing at pos = %d, addr = %p\n", MYTHREAD, pos, &kmer_c[pos * KMER_PACKED_LENGTH]);
-    upc_memput(&kmer_c[pos * KMER_PACKED_LENGTH], packedKmer, KMER_PACKED_LENGTH * sizeof(char));
+    upc_memput(kmer_c + pos * KMER_PACKED_LENGTH, packedKmer, KMER_PACKED_LENGTH * sizeof(char));
     #if 0
     int i;
     printf("THREAD%d: kmer_c = ", MYTHREAD);
