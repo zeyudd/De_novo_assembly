@@ -24,7 +24,7 @@ int main(int argc, char *argv[]){
 	int64_t i, ptr = 0, myPosInHeap;
 
 	char cur_contig[MAXIMUM_CONTIG_SIZE], left_ext, right_ext;
-	int64_t posInContig, contigID = 0, totBases = 0
+	int64_t posInContig, contigID = 0, totBases = 0;
 
 	start_kmer_t *startKmersList = NULL, *curStartNode;
 
