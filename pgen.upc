@@ -250,24 +250,7 @@ int main(int argc, char *argv[]){
 	}
 	
 	
-	upc_barrier;
-	traversalTime += gettime();
-
-	// produce a single output file
- 	if(MYTHREAD == 0) {
-    	output_file = fopen("pgen.out", "w");
-    
-   		 for(int t = 0; t < THREADS; ++ t) {
-      		char str[50];
-      		sprintf(str, "pgen%d.out", t);
-      		FILE*in_file = fopen(str, "r");
-      
-      		while(fscanf(in_file, "%s", cur_contig) == 1)
-        	fprintf(output_file, "%s\n", cur_contig);
-       		fclose(in_file);
-    	}  
-    	fclose(output_file);
-  	}
+  	
 #endif
 	//  code for graph traversal and output printing: end     //
 	////////////////////////////////////////////////////////////
