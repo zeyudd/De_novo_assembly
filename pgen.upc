@@ -131,6 +131,10 @@ int main(int argc, char *argv[]){
 	//////////////////////////////////////////
 	printf("THREAD%d finished graph construction!\n", MYTHREAD);
 	printf("hash[110421].head = %d\n", hashtable[110421].head);
+
+	int64_t a = -3; b = 10;
+	printf("a%b = %d\n", a%b);
+
 	upc_barrier;
 	constrTime += gettime();
 
