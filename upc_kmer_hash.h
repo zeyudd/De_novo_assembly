@@ -72,7 +72,8 @@ int add_kmer(shared kmer_t *kmer_i, shared [KMER_PACKED_LENGTH] char *kmer_c, in
 
     char unpackedKmer[KMER_LENGTH+1];
     unpackedKmer[KMER_LENGTH] = '\0';
-    unpackSequence(&kmer_c[pos*KMER_LENGTH], unpackedKmer, KMER_LENGTH);
+    //unpackSequence(&kmer_c[pos*KMER_LENGTH], unpackedKmer, KMER_LENGTH);
+    unpackSequence(packedKmer, unpackedKmer, KMER_LENGTH);
     printf("THREAD%d: packed kmer %s, pos=%d\n", MYTHREAD, unpackedKmer, pos);
     *posInHeap += THREADS; 
     return 0;
