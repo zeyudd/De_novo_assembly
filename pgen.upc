@@ -176,9 +176,10 @@ int main(int argc, char *argv[]){
 	
 	/* Pick start nodes from the startKmersList */
     curStartNode = startKmersList;
-
+	int iter = 0;
     while (curStartNode != NULL ) {
         /* Need to unpack the seed first */
+		printf("iter = %d\n", iter++);
         cur_kmer_ptr = curStartNode->kmerPtr;
 		upc_memget(packed_kmer_buf, kmer_char + cur_kmer_ptr * KMER_PACKED_LENGTH, KMER_PACKED_LENGTH);
 
