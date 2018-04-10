@@ -9,7 +9,7 @@
 
 # Parameters
 P=3				# Number of UPC processes to run
-INPUT=test1		# Path to your input file
+INPUT=test		# Path to your input file
 
 cd ${PWD}
 
