@@ -35,7 +35,7 @@ int main(int argc, char *argv[]){
 		return 0;
 
 	}
-	upc_barrier;
+	//upc_barrier;
 
 	data[MYTHREAD].pos = MYTHREAD;
 	data[MYTHREAD].mer = &mers[2*MYTHREAD];
