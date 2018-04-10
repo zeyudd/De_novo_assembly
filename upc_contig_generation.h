@@ -46,7 +46,7 @@ struct kmer_t{
 /* Start k-mer data structure */
 typedef struct start_kmer_t start_kmer_t;
 struct start_kmer_t{
-    shared kmer_t *kmerPtr;
+    int64_t kmerPtr;
     start_kmer_t *next;
 };
 

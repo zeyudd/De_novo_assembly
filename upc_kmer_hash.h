@@ -61,7 +61,7 @@ int add_kmer(shared kmer_t *kmer_i, shared [KMER_PACKED_LENGTH] char *kmer_c, in
     int64_t pos = *posInHeap;
       
     /* Add the contents to the appropriate kmer struct in the heap */ 
-    printf("THREAD %d packing at pos = %d, addr = %p\n", MYTHREAD, pos, kmer_c + pos * KMER_PACKED_LENGTH);
+    //printf("THREAD %d packing at pos = %d, addr = %p\n", MYTHREAD, pos, kmer_c + pos * KMER_PACKED_LENGTH);
     upc_memput(kmer_c + pos * KMER_PACKED_LENGTH, packedKmer, KMER_PACKED_LENGTH * sizeof(char));
     #if 0
     int i;
@@ -89,16 +89,16 @@ int add_kmer(shared kmer_t *kmer_i, shared [KMER_PACKED_LENGTH] char *kmer_c, in
 }
 
 /* Adds a k-mer in the start list by using the memory heap (the k-mer was "just added" in the memory heap at position posInHeap - 1) */
-void addKmerToStartList(shared kmer_t *heap, int64_t posInHeap, start_kmer_t **startKmersList)
+void addKmerToStartList(shared kmer_t *kmer_i, int64_t posInHeap, start_kmer_t **startKmersList)
 {
     start_kmer_t *new_entry;
-    shared kmer_t *ptrToKmer;
+    //int64_t ptrToKmer;
    
     int64_t prevPosInHeap = posInHeap - THREADS;
-    ptrToKmer = &(heap[prevPosInHeap]);
+    //ptrToKmer = kmer_i[prevPosInHeap];
     new_entry = (start_kmer_t*)malloc(sizeof(start_kmer_t));
     new_entry->next = (*startKmersList);
-    new_entry->kmerPtr = ptrToKmer;
+    new_entry->kmerPtr = prevPosInHeap;
     (*startKmersList) = new_entry;
 }
 

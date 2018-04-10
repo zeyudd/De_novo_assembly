@@ -21,13 +21,18 @@ int main(int argc, char *argv[]){
 	int64_t cur_chars_read;
 	char *input_UFX_name;
 	unsigned char *my_buffer;
-	int64_t ptr = 0;
+	int64_t i, ptr = 0, myPosInHeap;
 
-	char cur_contig[MAXIMUM_CONTIG_SIZE], unpackedKmer[KMER_LENGTH+1], left_ext, right_ext;
+	char cur_contig[MAXIMUM_CONTIG_SIZE], left_ext, right_ext;
 	start_kmer_t *startKmersList = NULL, *curStartNode;
 
-	unpackedKmer[KMER_LENGTH] = '\0';
-	kmer_t *cur_kmer_ptr;
+	char kmer_buf[KMER_LENGTH + 1], packed_kmer_buf[KMER_PACKED_LENGTH + 1];
+	kmer_buf[KMER_LENGTH] = '\0';
+	packed_kmer_buf[KMER_PACKED_LENGTH] = '\0';
+
+	int64_t cur_kmer_ptr;
+    start_kmer_t *startKmersList = NULL, *curStartNode;
+
 	upc_file_t *input_file;
 
 	/** Read input **/
@@ -83,7 +88,6 @@ int main(int argc, char *argv[]){
 	shared [KMER_PACKED_LENGTH] char *kmer_char;
 	kmer_char = (shared [KMER_PACKED_LENGTH] char *)upc_all_alloc(nKmers, KMER_PACKED_LENGTH * sizeof(char));
 
-
 	shared [LOAD_FACTOR] bucket_t *hashtable;
 	hashtable = (shared [LOAD_FACTOR] bucket_t *)upc_all_alloc(nKmers, LOAD_FACTOR *sizeof(bucket_t));
 	int64_t hashlen = nKmers * LOAD_FACTOR;	
@@ -91,7 +95,7 @@ int main(int argc, char *argv[]){
 //      	fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));
 //      	upc_global_exit(1);
 //   	}
-	int i;
+	
 	upc_forall(i = 0; i < hashlen; i++; &hashtable[i]){
 		hashtable[i].head = -1;
 	}
@@ -100,7 +104,7 @@ int main(int argc, char *argv[]){
 	upc_barrier;
 
 	
-	int64_t myPosInHeap = MYTHREAD;
+	myPosInHeap = MYTHREAD;
 	while (ptr < cur_chars_read) {
     	/* working_buffer[ptr] is the start of the current k-mer                */
      	/* so current left extension is at working_buffer[ptr+KMER_LENGTH+1]    */
@@ -114,7 +118,7 @@ int main(int argc, char *argv[]){
 		
       	/* Create also a list with the "start" kmers: nodes with F as left (backward) extension */
       	if (left_ext == 'F') {
-        // 	addKmerToStartList(heap, myPosInHeap, &startKmersList);
+         	addKmerToStartList(kmer_info, myPosInHeap, &startKmersList);
       	}
 
       	/* Move to the next k-mer in the input working_buffer */
@@ -128,7 +132,7 @@ int main(int argc, char *argv[]){
 
 
 	//debug
-	#if 1
+	#if 0
 	if(MYTHREAD == 0){
 		int i;
 		for(i = 0; i < nKmers; i++){
@@ -151,7 +155,7 @@ int main(int argc, char *argv[]){
 	
 	
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-#if 0
+
 
 	/** Graph traversal **/
 	traversalTime -= gettime();
@@ -163,9 +167,9 @@ int main(int argc, char *argv[]){
    	int64_t posInContig, contigID = 0, totBases = 0;
 
 	
-	char output_file_name[50];
-	sprintf(output_file_name, "pgen%d.out", MYTHREAD);
-	FILE *output_file = fopen(output_file_name, "w"); 
+	//char output_file_name[50];
+	//sprintf(output_file_name, "pgen%d.out", MYTHREAD);
+	//FILE *output_file = fopen(output_file_name, "w"); 
 	
 	/* Pick start nodes from the startKmersList */
     curStartNode = startKmersList;
@@ -173,7 +177,13 @@ int main(int argc, char *argv[]){
     while (curStartNode != NULL ) {
         /* Need to unpack the seed first */
         cur_kmer_ptr = curStartNode->kmerPtr;
-      	unpackSequence((unsigned char*) cur_kmer_ptr->kmer,  (unsigned char*) unpackedKmer, KMER_LENGTH);
+		upc_memget(packed_kmer_buf, kmer_char + cur_kmer_ptr * KMER_PACKED_LENGTH, KMER_PACKED_LENGTH);
+
+
+      	unpackSequence((unsigned char*) packed_kmer_buf,  (unsigned char*) kmer_buf, KMER_LENGTH);
+		printf("THREAD %d: start kmer = %s\n", kmer_buf);
+
+		#if 0  
       	/* Initialize current contig with the seed content */
       	memcpy(cur_contig ,unpackedKmer, KMER_LENGTH * sizeof(char));
       	posInContig = KMER_LENGTH;
@@ -194,10 +204,11 @@ int main(int argc, char *argv[]){
       	contigID++;
       	totBases += strlen(cur_contig);
       	/* Move to the next start node in the list */
+		#endif
       	curStartNode = curStartNode->next;
    }
 	
-	
+#if 0	
 	// close the output file
 	fclose(output_file);
 	
