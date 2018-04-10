@@ -99,7 +99,7 @@ int main(int argc, char *argv[]){
 
 
 	
-	while (ptr < cur_chars_read) {
+	while (0){//(ptr < cur_chars_read) {
     	/* working_buffer[ptr] is the start of the current k-mer                */
      	/* so current left extension is at working_buffer[ptr+KMER_LENGTH+1]    */
      	/* and current right extension is at working_buffer[ptr+KMER_LENGTH+2]  */
@@ -127,6 +127,7 @@ int main(int argc, char *argv[]){
 
 
 	//debug
+	#if 0
 	if(MYTHREAD == 0){
 		int i;
 		for(i = 0; i < nKmers; i++){
@@ -137,7 +138,7 @@ int main(int argc, char *argv[]){
 
 
 	}
-	
+	#endif
 	
 	
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
