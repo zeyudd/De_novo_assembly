@@ -138,7 +138,7 @@ int main(int argc, char *argv[]){
 				buffer[j] = 'X';
 
 			buffer[KMER_LENGTH] = '\0';
-			unsigned char *k = (unsigned char *)(kmer_char) + i*KMER_PACKED_LENGTH;
+			shared unsigned char *k = (unsigned char *)(kmer_char + i*KMER_PACKED_LENGTH);
 			printf("pos %d, addr = %p \n", i, k);
 			unpackSequence(k, buffer, KMER_LENGTH);			
 			printf("%d\t %c%c %s, next = %d\n",i, kmer_info[i].l_ext, kmer_info[i].r_ext, buffer, kmer_info[i].next);
