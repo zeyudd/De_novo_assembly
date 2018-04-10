@@ -128,16 +128,14 @@ int main(int argc, char *argv[]){
 
 
 	//debug
-	#if 0
+	#if 1
 	if(MYTHREAD == 0){
 		int i;
 		for(i = 0; i < nKmers; i++){
-			const unsigned char *k = (const unsigned char *)heap_kmers[i*KMER_PACKED_LENGTH];
+			const unsigned char *k = (const unsigned char *)&heap_kmers[i*KMER_PACKED_LENGTH];
 			unpackSequence(k, unpackedKmer, KMER_LENGTH);			
 			printf("%c, %c, %s\n", heap[i].l_ext, heap[i].r_ext, unpackedKmer);
 		}
-
-
 	}
 	#endif
 	
