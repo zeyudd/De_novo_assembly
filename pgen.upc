@@ -168,10 +168,10 @@ int main(int argc, char *argv[]){
 
 
 	
-	//char output_file_name[50];
-	//sprintf(output_file_name, "pgen%d.out", MYTHREAD);
-	//FILE *output_file = fopen(output_file_name, "w"); 
-	output_file = upc_all_fopen("pgen.out", UPC_WRONLY | UPC_COMMON_FP | UPC_CREATE /*| UPC_STRONG_CA | UPC_TRUNC*/, 0, NULL);
+	char output_file_name[50];
+	sprintf(output_file_name, "pgen%d.out", MYTHREAD);
+	FILE *output_file = fopen(output_file_name, "w"); 
+	//output_file = upc_all_fopen("pgen.out", UPC_WRONLY | UPC_COMMON_FP | UPC_CREATE /*| UPC_STRONG_CA | UPC_TRUNC*/, 0, NULL);
 	
 	/* Pick start nodes from the startKmersList */
     curStartNode = startKmersList;
@@ -204,23 +204,24 @@ int main(int argc, char *argv[]){
       	}
 
       	/* Print the contig since we have found the corresponding terminal node */
-     	cur_contig[posInContig] = '\n';
-		cur_contig[posInContig+1] = '\0';
+     	cur_contig[posInContig] = '\0';
+		fprintf(out_file, "%s\n", cur_contig);
+		//cur_contig[posInContig+1] = '\0';
 
-		if(MYTHREAD == 0){ 
-		int write = upc_all_fwrite_local(output_file, (void *)cur_contig, posInContig + 1, sizeof(char), UPC_IN_NOSYNC | UPC_OUT_NOSYNC);
-		printf("THREAD %d: start kmer = %s\t contig = %s, posInContig = %d, #bytes written is %d\n", MYTHREAD, kmer_buf, cur_contig, posInContig, write);
-		}
+		//if(MYTHREAD == 0){ 
+		//int write = upc_all_fwrite_local(output_file, (void *)cur_contig, posInContig + 1, sizeof(char), UPC_IN_NOSYNC | UPC_OUT_NOSYNC);
+		//printf("THREAD %d: start kmer = %s\t contig = %s, posInContig = %d, #bytes written is %d\n", MYTHREAD, kmer_buf, cur_contig, posInContig, write);
+		//}
       	contigID++;
       	totBases += strlen(cur_contig);
       	/* Move to the next start node in the list */
 		#endif
       	curStartNode = curStartNode->next;
    }
-	upc_all_fclose(output_file);
-#if 0	
+	//upc_all_fclose(output_file);
+#if 1	
 	// close the output file
-	fclose(output_file);
+	fclose(out_file);
 	
 	
 	// clean the allocated memory
@@ -232,6 +233,20 @@ int main(int argc, char *argv[]){
 	  //upc_free(memory_heap);
 	  //upc_free(next_index);
 	  //upc_free(hash_table);
+	  out_file = fopen("pgen.out", "w");
+    
+    for(int t = 0; t < THREADS; ++ t) {
+      char str[50];
+      sprintf(str, "pgen%d.out", t);
+      FILE *in_file = fopen(str, "r");
+      
+      while(fscanf(in_file, "%s", cur_contig) == 1)
+        fprintf(out_file, "%s\n", cur_contig);
+       
+      fclose(in_file);
+    }
+    
+    fclose(out_file);
 	}
 	
 	
