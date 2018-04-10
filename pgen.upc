@@ -98,8 +98,9 @@ int main(int argc, char *argv[]){
 	heap_kmers = (shared [KMER_PACKED_LENGTH] char *)upc_all_alloc(nKmers, KMER_PACKED_LENGTH * sizeof(char));
 
 
-	
-	while (0){//(ptr < cur_chars_read) {
+	upc_barrier;
+
+	while (ptr < cur_chars_read) {
     	/* working_buffer[ptr] is the start of the current k-mer                */
      	/* so current left extension is at working_buffer[ptr+KMER_LENGTH+1]    */
      	/* and current right extension is at working_buffer[ptr+KMER_LENGTH+2]  */
