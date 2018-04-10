@@ -40,26 +40,26 @@ typedef struct kmer_t kmer_t;
 struct kmer_t{
    char l_ext;
    char r_ext;
-   int64_t next;
+   size_t next;
 };
 
 /* Start k-mer data structure */
 typedef struct start_kmer_t start_kmer_t;
 struct start_kmer_t{
-    int64_t kmerPtr;
+    size_t kmerPtr;
     start_kmer_t *next;
 };
 
 /* Bucket data structure */
 typedef struct bucket_t bucket_t;
 struct bucket_t{
-   int16_t head;          // Pointer to the first entry of that bucket
+   size_t head;          // Pointer to the first entry of that bucket
 };
 
 /* Hash table data structure */
 typedef struct hash_table_t hash_table_t;
 struct hash_table_t {
-   int64_t size;           // Size of the hash table
+   size_t size;           // Size of the hash table
    shared bucket_t *table;			// Entries of the hash table are pointers to buckets
 };
 
@@ -67,7 +67,7 @@ struct hash_table_t {
 typedef struct memory_heap_t memory_heap_t;
 struct memory_heap_t {
    shared kmer_t *heap;
-   int64_t posInHeap;
+   size_t posInHeap;
 };
 
 /* Returns the number of UFX kmers in a file */

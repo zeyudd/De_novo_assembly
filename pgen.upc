@@ -99,7 +99,7 @@ int main(int argc, char *argv[]){
 //   	}
 	
 	upc_forall(i = 0; i < hashlen; i++; &hashtable[i]){
-		hashtable[i].head = -1;
+		hashtable[i].head = hashlen;
 	}
 	//upc_memset(hashtable, 0, nKmers * LOAD_FACTOR * sizeof(bucket_t));  
 
@@ -205,7 +205,7 @@ int main(int argc, char *argv[]){
 			printf(">>>DEBUG1<<<\n");
        	  	cur_kmer_ptr = lookup_kmer(kmer_char, kmer_info, hashtable, hashlen, (const unsigned char *) &cur_contig[posInContig-KMER_LENGTH]);
 			printf(">>>DEBUG2<<<\n");
-			if(cur_kmer_ptr == -1){
+			if(cur_kmer_ptr == hashlen){
 				break;
 			}
        	  	right_ext = kmer_info[cur_kmer_ptr].r_ext;
