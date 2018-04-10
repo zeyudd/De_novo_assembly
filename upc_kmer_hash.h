@@ -18,16 +18,16 @@ int64_t hashseq(int64_t  hashtable_size, char *seq, int size)
       hashval = seq[i] +  (hashval << 5) + hashval;
    }
    
-   
-   int64_t ret = hashval % hashtable_size;
-   return (ret < 0)? ret + hashtable_size : ret;
+   return hashval % hashtable_size;
 }
 
 /* Returns the hash value of a kmer */
 int64_t hashkmer(int64_t  hashtable_size, char *seq)
 {
-   return hashseq(hashtable_size, seq, KMER_PACKED_LENGTH);
+    int64_t ret = hashseq(hashtable_size, seq, KMER_PACKED_LENGTH);
+    return (ret >= 0)? ret : ret + hashtable_size;
 }
+   
 
 /* Looks up a kmer in the hash table and returns a pointer to that entry */
 int64_t lookup_kmer(shared [KMER_PACKED_LENGTH] char *kmer_c, shared [1] kmer_t *kmer_i, 
