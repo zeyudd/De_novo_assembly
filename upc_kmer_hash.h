@@ -27,7 +27,7 @@ int64_t hashkmer(int64_t  hashtable_size, char *seq)
    return hashseq(hashtable_size, seq, KMER_PACKED_LENGTH);
 }
 
-/* Looks up a kmer in the hash table and returns a pointer to that entry */
+/* Looks up a kmer in the hash table and returns a pointer to that entry *//*
 shared kmer_t* lookup_kmer(shared bucket_t *hashtable, int64_t hashtable_size, const unsigned char *kmer)
 {
     char packedKmer[KMER_PACKED_LENGTH];
@@ -46,7 +46,7 @@ shared kmer_t* lookup_kmer(shared bucket_t *hashtable, int64_t hashtable_size, c
         result = result->next;
    }
    return NULL;
-}
+}*/
 
 /* Adds a kmer and its extensions in the hash table (note that a memory heap should be preallocated. ) */
 int add_kmer(shared bucket_t *hashtable, int64_t hashtable_size, shared kmer_t *heap, int64_t *posInHeap, 
