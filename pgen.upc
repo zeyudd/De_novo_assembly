@@ -35,7 +35,7 @@ int main(int argc, char *argv[]){
 	int64_t cur_kmer_ptr;
 
 
-	upc_file_t *input_file, output_file;
+	upc_file_t *input_file, *output_file;
 
 	/** Read input **/
 	upc_barrier;
