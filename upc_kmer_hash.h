@@ -56,6 +56,11 @@ int add_kmer(shared bucket_t *hashtable, int64_t hashtable_size, shared kmer_t *
    char packedKmer[KMER_PACKED_LENGTH+1];
    packedKmer[KMER_PACKED_LENGTH] = '\0';
    packSequence(kmer_to_add, (unsigned char*) packedKmer, KMER_LENGTH);
+
+   char unpackedKmer[KMER_LENGTH+1];
+   unpackedKmer[KMER_LENGTH] = '\0';
+   unpackSequence(packedKmer, unpackedKmer, KMER_LENGTH);
+
    
    int64_t hashval = hashkmer(hashtable_size, (char*) packedKmer);
 
@@ -71,7 +76,7 @@ int add_kmer(shared bucket_t *hashtable, int64_t hashtable_size, shared kmer_t *
    heap[pos].next_id = hashtable[hashval].head;
    /* Fix the head pointer of the appropriate bucket to point to the current kmer */
    hashtable[hashval].head = pos;
-   printf("THREAD%d: packed kmer %s, pos=%d\n", MYTHREAD, packedKmer, pos);
+   printf("THREAD%d: packed kmer %s, pos=%d\n", MYTHREAD, unpackedKmer, pos);
    *posInHeap += THREADS; 
    return 0;
 }
