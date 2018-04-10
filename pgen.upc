@@ -209,7 +209,7 @@ int main(int argc, char *argv[]){
 
 		if(MYTHREAD == 0){ 
 		int write = upc_all_fwrite_local(output_file, (void *)cur_contig, posInContig + 1, sizeof(char), UPC_IN_NOSYNC | UPC_OUT_NOSYNC);
-		printf("THREAD %d: start kmer = %s\t contig = %s, #bytes written is %d\n", MYTHREAD, kmer_buf, cur_contig, write);
+		printf("THREAD %d: start kmer = %s\t contig = %s, posInContig = %d, #bytes written is %d\n", MYTHREAD, kmer_buf, cur_contig, posInContig, write);
 		}
       	contigID++;
       	totBases += strlen(cur_contig);

@@ -9,6 +9,7 @@
         "vector": "c",
         "ios": "cpp",
         "math.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "ostream": "c"
     }
 }
