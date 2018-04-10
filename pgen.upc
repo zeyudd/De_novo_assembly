@@ -128,7 +128,8 @@ int main(int argc, char *argv[]){
    	}
 	
 	//  code for graph construction: end     //
-	///////////////////////////////////////////
+	//////////////////////////////////////////
+	printf("THREAD%d finished graph construction!\n", MYTHREAD);
 	upc_barrier;
 	constrTime += gettime();
 
