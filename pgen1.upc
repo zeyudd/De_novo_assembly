@@ -13,7 +13,7 @@
 //upc_lock_t heap_lock;
 typedef struct data_t data_t;
 struct data_t{
-	shared char * shared mer;
+	shared char * mer;
 	int pos;
 };
 
