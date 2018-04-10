@@ -179,7 +179,7 @@ int main(int argc, char *argv[]){
 	int iter = 0;
     while (curStartNode != NULL ) {
         /* Need to unpack the seed first */
-		printf("iter = %d\n", iter++);
+		
         cur_kmer_ptr = curStartNode->kmerPtr;
 		upc_memget(packed_kmer_buf, kmer_char + cur_kmer_ptr * KMER_PACKED_LENGTH, KMER_PACKED_LENGTH);
 
@@ -187,7 +187,7 @@ int main(int argc, char *argv[]){
       	unpackSequence((unsigned char*) packed_kmer_buf,  (unsigned char*) kmer_buf, KMER_LENGTH);
 		printf("THREAD %d: start kmer = %s\t", MYTHREAD, kmer_buf);
 
-		#if 1  
+		 
       	/* Initialize current contig with the seed content */
       	memcpy(cur_contig ,kmer_buf, KMER_LENGTH * sizeof(char));
       	posInContig = KMER_LENGTH;
@@ -195,6 +195,7 @@ int main(int argc, char *argv[]){
 
       	/* Keep adding bases while not finding a terminal node */
       	while (right_ext != 'F') {
+			  printf("while iter = %d\n", iter++);
        	  	cur_contig[posInContig] = right_ext;
        	  	posInContig++;
        	  	/* At position cur_contig[posInContig-KMER_LENGTH] starts the last k-mer in the current contig */
@@ -217,7 +218,7 @@ int main(int argc, char *argv[]){
       	contigID++;
       	totBases += strlen(cur_contig);
       	/* Move to the next start node in the list */
-		#endif
+	
       	curStartNode = curStartNode->next;
    }
 	//upc_all_fclose(output_file);
