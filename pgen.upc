@@ -73,33 +73,34 @@ int main(int argc, char *argv[]){
     init_LookupTable();
 	/* Creates a hash table and (pre)allocates memory for the memory heap */
 
-
-
-	shared [LOAD_FACTOR] bucket_t *hashtable;
-	hashtable = (shared [LOAD_FACTOR] bucket_t *) upc_all_alloc(nKmers, LOAD_FACTOR *sizeof(bucket_t));
-	int64_t hashtable_size = nKmers * LOAD_FACTOR;	
-//   	if (hashtable.table == NULL) {
-//      	fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));
-//      	upc_global_exit(1);
-//   	}
-	upc_memset(hashtable, 0, nKmers * LOAD_FACTOR * sizeof(bucket_t));  
-
-
-	shared [1] kmer_t *heap;
-	heap = (shared [1] kmer_t *) upc_all_alloc (nKmers, sizeof(kmer_t));  	
+	shared [1] kmer_t *kmer_info;
+	kmer_info = (shared [1] kmer_t *)upc_all_alloc (nKmers, sizeof(kmer_t));  	
 //   	if (heaps[MYTHREAD].heap == NULL) {
 //      	fprintf(stderr, "ERROR: Thread %d could not allocate memory for the heap!\n", MYTHREAD);
 //      	upc_global_exit(1);
 //   	}
-	int64_t myPosInHeap = MYTHREAD;
+
+	shared [KMER_PACKED_LENGTH] char *kmer_char;
+	kmer_char = (shared [KMER_PACKED_LENGTH] char *)upc_all_alloc(nKmers, KMER_PACKED_LENGTH * sizeof(char));
 
 
-	shared [KMER_PACKED_LENGTH] char *heap_kmers;
-	heap_kmers = (shared [KMER_PACKED_LENGTH] char *)upc_all_alloc(nKmers, KMER_PACKED_LENGTH * sizeof(char));
-
+	shared [LOAD_FACTOR] bucket_t *hashtable;
+	hashtable = (shared [LOAD_FACTOR] bucket_t *)upc_all_alloc(nKmers, LOAD_FACTOR *sizeof(bucket_t));
+	int64_t hashlen = nKmers * LOAD_FACTOR;	
+//   	if (hashtable.table == NULL) {
+//      	fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));
+//      	upc_global_exit(1);
+//   	}
+	int i;
+	upc_forall(i = 0; i < hashlen; i++; &hashtable[i]){
+		hashtable[i] = -1;
+	}
+	//upc_memset(hashtable, 0, nKmers * LOAD_FACTOR * sizeof(bucket_t));  
 
 	upc_barrier;
 
+	
+	int64_t myPosInHeap = MYTHREAD;
 	while (ptr < cur_chars_read) {
     	/* working_buffer[ptr] is the start of the current k-mer                */
      	/* so current left extension is at working_buffer[ptr+KMER_LENGTH+1]    */
@@ -109,9 +110,8 @@ int main(int argc, char *argv[]){
 
       	/* Add k-mer to hash table */
       	//add_kmer(&hashtable, heap, &myPosInHeap, &my_buffer[ptr], left_ext, right_ext);
-		add_kmer(hashtable, hashtable_size, heap, &myPosInHeap, heap_kmers, &my_buffer[ptr], left_ext, right_ext);
+		add_kmer(kmer_info, kmer_char, &myPosInHeap, hashtable, hashlen, &my_buffer[ptr], left_ext, right_ext);
 		
-
       	/* Create also a list with the "start" kmers: nodes with F as left (backward) extension */
       	if (left_ext == 'F') {
         // 	addKmerToStartList(heap, myPosInHeap, &startKmersList);
@@ -128,7 +128,7 @@ int main(int argc, char *argv[]){
 
 
 	//debug
-	#if 1
+	#if 0
 	if(MYTHREAD == 0){
 		int i;
 		for(i = 0; i < nKmers; i++){
