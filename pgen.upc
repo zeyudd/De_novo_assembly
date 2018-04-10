@@ -181,7 +181,7 @@ int main(int argc, char *argv[]){
 
 
       	unpackSequence((unsigned char*) packed_kmer_buf,  (unsigned char*) kmer_buf, KMER_LENGTH);
-		printf("THREAD %d: start kmer = %s\n", kmer_buf);
+		printf("THREAD %d: start kmer = %s\n", MYTHREAD, kmer_buf);
 
 		#if 0  
       	/* Initialize current contig with the seed content */
