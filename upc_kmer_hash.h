@@ -10,7 +10,7 @@
 #include <upc.h>
 
 /* Auxiliary function for computing hash values */
-int64_t hashseq(int64_t  hashtable_size, char *seq, int size)
+size_t hashseq(size_t  hashtable_size, char *seq, int size)
 {
    unsigned long hashval;
    hashval = 5381;
@@ -22,24 +22,23 @@ int64_t hashseq(int64_t  hashtable_size, char *seq, int size)
 }
 
 /* Returns the hash value of a kmer */
-int64_t hashkmer(int64_t  hashtable_size, char *seq)
+size_t hashkmer(size_t  hashtable_size, char *seq)
 {
-    int64_t ret = hashseq(hashtable_size, seq, KMER_PACKED_LENGTH);
-    return (ret >= 0)? ret : ret + hashtable_size;
+    return = hashseq(hashtable_size, seq, KMER_PACKED_LENGTH);
 }
    
 
 /* Looks up a kmer in the hash table and returns a pointer to that entry */
-int64_t lookup_kmer(shared [KMER_PACKED_LENGTH] char *kmer_c, shared [1] kmer_t *kmer_i, 
-                    shared [LOAD_FACTOR] bucket_t *hashtable, int64_t hashlen, const unsigned char *kmer)
+size_t lookup_kmer(shared [KMER_PACKED_LENGTH] char *kmer_c, shared [1] kmer_t *kmer_i, 
+                    shared [LOAD_FACTOR] bucket_t *hashtable, size_t hashlen, const unsigned char *kmer)
 {
     char packedKmer[KMER_PACKED_LENGTH];
     packSequence(kmer, (unsigned char*) packedKmer, KMER_LENGTH);
-    int64_t hashval = hashkmer(hashlen, (char*) packedKmer);
+    size_t hashval = hashkmer(hashlen, (char*) packedKmer);
 
     printf(">>>DEBUG2.5: hashval = %d, hash = %d <<<\n", hashval, hashtable[hashval].head);
     bucket_t cur_bucket;
-    int64_t result;
+    size_t result;
     
     upc_memget(&cur_bucket, hashtable + hashval, sizeof(bucket_t));
     result = cur_bucket.head;
@@ -57,16 +56,16 @@ int64_t lookup_kmer(shared [KMER_PACKED_LENGTH] char *kmer_c, shared [1] kmer_t 
 }
 
 /* Adds a kmer and its extensions in the hash table (note that a memory heap should be preallocated. ) */
-int add_kmer(shared kmer_t *kmer_i, shared [KMER_PACKED_LENGTH] char *kmer_c, int64_t *posInHeap, 
-             shared bucket_t *hashtable, int64_t hashlen, const unsigned char *kmer_to_add, char left_ext, char right_ext)
+int add_kmer(shared kmer_t *kmer_i, shared [KMER_PACKED_LENGTH] char *kmer_c, size_t *posInHeap, 
+             shared bucket_t *hashtable, size_t hashlen, const unsigned char *kmer_to_add, char left_ext, char right_ext)
 {
    /* Pack a k-mer sequence appropriately */
     char packedKmer[KMER_PACKED_LENGTH+1];
     packedKmer[KMER_PACKED_LENGTH] = '\0';
     packSequence(kmer_to_add, (unsigned char*) packedKmer, KMER_LENGTH);
 
-    int64_t hashval = hashkmer(hashlen, (char*) packedKmer);
-    int64_t pos = *posInHeap;
+    size_t hashval = hashkmer(hashlen, (char*) packedKmer);
+    size_t pos = *posInHeap;
       
     /* Add the contents to the appropriate kmer struct in the heap */ 
     //printf("THREAD %d packing at pos = %d, addr = %p\n", MYTHREAD, pos, kmer_c + pos * KMER_PACKED_LENGTH);
@@ -97,12 +96,12 @@ int add_kmer(shared kmer_t *kmer_i, shared [KMER_PACKED_LENGTH] char *kmer_c, in
 }
 
 /* Adds a k-mer in the start list by using the memory heap (the k-mer was "just added" in the memory heap at position posInHeap - 1) */
-void addKmerToStartList(shared kmer_t *kmer_i, int64_t posInHeap, start_kmer_t **startKmersList)
+void addKmerToStartList(shared kmer_t *kmer_i, size_t posInHeap, start_kmer_t **startKmersList)
 {
     start_kmer_t *new_entry;
-    //int64_t ptrToKmer;
+    //size_t ptrToKmer;
    
-    int64_t prevPosInHeap = posInHeap - THREADS;
+    size_t prevPosInHeap = posInHeap - THREADS;
     //ptrToKmer = kmer_i[prevPosInHeap];
     new_entry = (start_kmer_t*)malloc(sizeof(start_kmer_t));
     new_entry->next = (*startKmersList);

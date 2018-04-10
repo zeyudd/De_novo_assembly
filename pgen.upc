@@ -17,14 +17,14 @@ int main(int argc, char *argv[]){
 	/** Declarations **/
 	double inputTime=0.0, constrTime=0.0, traversalTime=0.0;
 
-	int64_t nKmers, avg_nKmers, rem_nKmers, my_lines_to_read, my_lines_to_skip, my_read_size, my_read_offset;
-	int64_t cur_chars_read;
+	size_t nKmers, avg_nKmers, rem_nKmers, my_lines_to_read, my_lines_to_skip, my_read_size, my_read_offset;
+	size_t cur_chars_read;
 	char *input_UFX_name;
 	unsigned char *my_buffer;
-	int64_t i, ptr = 0, myPosInHeap;
+	size_t i, ptr = 0, myPosInHeap;
 
 	char cur_contig[MAXIMUM_CONTIG_SIZE], left_ext, right_ext;
-	int64_t posInContig, contigID = 0, totBases = 0;
+	size_t posInContig, contigID = 0, totBases = 0;
 
 	start_kmer_t *startKmersList = NULL, *curStartNode;
 
@@ -32,7 +32,7 @@ int main(int argc, char *argv[]){
 	kmer_buf[KMER_LENGTH] = '\0';
 	packed_kmer_buf[KMER_PACKED_LENGTH] = '\0';
 
-	int64_t cur_kmer_ptr;
+	size_t cur_kmer_ptr;
 
 
 	upc_file_t *input_file, *output_file;
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]){
 
 	shared [LOAD_FACTOR] bucket_t *hashtable;
 	hashtable = (shared [LOAD_FACTOR] bucket_t *)upc_all_alloc(nKmers, LOAD_FACTOR *sizeof(bucket_t));
-	int64_t hashlen = nKmers * LOAD_FACTOR;	
+	size_t hashlen = nKmers * LOAD_FACTOR;	
 //   	if (hashtable.table == NULL) {
 //      	fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));
 //      	upc_global_exit(1);
@@ -132,7 +132,7 @@ int main(int argc, char *argv[]){
 	printf("THREAD%d finished graph construction!\n", MYTHREAD);
 	printf("hash[110421].head = %d\n", hashtable[110421].head);
 
-	int64_t a = -17, b = 100;
+	size_t a = -17, b = 100;
 	printf("a%b = %d\n", a%b);
 
 	upc_barrier;
