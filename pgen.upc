@@ -140,7 +140,7 @@ int main(int argc, char *argv[]){
 			buffer[KMER_LENGTH] = '\0';
 			unsigned char *k = (unsigned char *)(&kmer_char[i*KMER_PACKED_LENGTH]);
 			unpackSequence(k, buffer, KMER_LENGTH);			
-			printf("%d\t%c, %c, %s\n",i, heap[i].l_ext, heap[i].r_ext, buffer);
+			printf("%d\t %c%c %s, next = %d\n",i, kmer_info[i].l_ext, kmer_info[i].r_ext, buffer, kmer_info[i].next);
 		}
 	}
 	#endif
