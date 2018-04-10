@@ -22,9 +22,9 @@ size_t hashseq(size_t  hashtable_size, char *seq, int size)
 }
 
 /* Returns the hash value of a kmer */
-size_t hashkmer(size_t  hashtable_size, char *seq)
+size_t hashkmer(size_t hashtable_size, char *seq)
 {
-    return = hashseq(hashtable_size, seq, KMER_PACKED_LENGTH);
+    return hashseq(hashtable_size, seq, KMER_PACKED_LENGTH);
 }
    
 
