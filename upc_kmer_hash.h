@@ -19,7 +19,7 @@ int64_t hashseq(int64_t  hashtable_size, char *seq, int size)
    }
    
    int64_t ret = hashval % hashtable_size;
-   return (ret < 0)? ret +  hashtable_size, ret;
+   return (ret < 0)? ret + hashtable_size : ret;
 }
 
 /* Returns the hash value of a kmer */
