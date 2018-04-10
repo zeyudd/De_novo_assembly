@@ -37,7 +37,7 @@ int64_t lookup_kmer(shared [KMER_PACKED_LENGTH] char *kmer_c, shared [1] kmer_t 
     bucket_t cur_bucket;
     int64_t result;
     
-    cur_bucket = hashtable[hashval];
+    upc_memget(&cur_bucket, hashtable + hashval, sizeof(bucket_t));
     result = cur_bucket.head;
     printf(">>>DEBUG3: result = %d <<<\n", result);
     char packed_kmer_buf[KMER_PACKED_LENGTH];
