@@ -198,13 +198,13 @@ int main(int argc, char *argv[]){
 
       	/* Keep adding bases while not finding a terminal node */
       	while (right_ext != 'F') {
-			printf("while iter = %d\n", iter++);
+			//printf("while iter = %d\n", iter++);
        	  	cur_contig[posInContig] = right_ext;
        	  	posInContig++;
        	  	/* At position cur_contig[posInContig-KMER_LENGTH] starts the last k-mer in the current contig */
-			printf(">>>DEBUG1<<<\n");
+			//printf(">>>DEBUG1<<<\n");
        	  	cur_kmer_ptr = lookup_kmer(kmer_char, kmer_info, hashtable, hashlen, (const unsigned char *) &cur_contig[posInContig-KMER_LENGTH]);
-			printf(">>>DEBUG2<<<\n");
+			//printf(">>>DEBUG2<<<\n");
 			if(cur_kmer_ptr == hashlen){
 				break;
 			}

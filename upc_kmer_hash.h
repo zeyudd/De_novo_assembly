@@ -36,13 +36,13 @@ size_t lookup_kmer(shared [KMER_PACKED_LENGTH] char *kmer_c, shared [1] kmer_t *
     packSequence(kmer, (unsigned char*) packedKmer, KMER_LENGTH);
     size_t hashval = hashkmer(hashlen, (char*) packedKmer);
 
-    printf(">>>DEBUG2.5: hashval = %zu, hash = %zu <<<\n", hashval, hashtable[hashval].head);
+    //printf(">>>DEBUG2.5: hashval = %zu, hash = %zu <<<\n", hashval, hashtable[hashval].head);
     bucket_t cur_bucket;
     size_t result;
     
     upc_memget(&cur_bucket, hashtable + hashval, sizeof(bucket_t));
     result = cur_bucket.head;
-    printf(">>>DEBUG3: result = %d <<<\n", result);
+    //printf(">>>DEBUG3: result = %d <<<\n", result);
     char packed_kmer_buf[KMER_PACKED_LENGTH];
     for (; result!=hashlen; ) {
         upc_memget(packed_kmer_buf, kmer_c + result * KMER_PACKED_LENGTH, KMER_PACKED_LENGTH);
@@ -50,7 +50,7 @@ size_t lookup_kmer(shared [KMER_PACKED_LENGTH] char *kmer_c, shared [1] kmer_t *
             return result;
         }
         result = kmer_i[result].next;
-        printf(">>>DEBUG4: result = %d <<<\n", result);
+        //printf(">>>DEBUG4: result = %d <<<\n", result);
    }
    return hashlen;
 }
