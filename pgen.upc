@@ -138,7 +138,7 @@ int main(int argc, char *argv[]){
 				buffer[j] = 'X';
 
 			buffer[KMER_LENGTH] = '\0';
-			const unsigned char *k = (const unsigned char *)&heap_kmers[i];
+			const unsigned char *k = (const unsigned char *)(heap_kmers[0] + i*KMER_LENGTH );
 			unpackSequence(k, buffer, KMER_LENGTH);			
 			printf("%d\t%c, %c, %s\n",i, heap[i].l_ext, heap[i].r_ext, buffer);
 		}
