@@ -57,9 +57,7 @@ int add_kmer(shared bucket_t *hashtable, int64_t hashtable_size, shared kmer_t *
    packedKmer[KMER_PACKED_LENGTH] = '\0';
    packSequence(kmer_to_add, (unsigned char*) packedKmer, KMER_LENGTH);
 
-   char unpackedKmer[KMER_LENGTH+1];
-   unpackedKmer[KMER_LENGTH] = '\0';
-   unpackSequence(packedKmer, unpackedKmer, KMER_LENGTH);
+   
 
    
    int64_t hashval = hashkmer(hashtable_size, (char*) packedKmer);
@@ -71,6 +69,10 @@ int add_kmer(shared bucket_t *hashtable, int64_t hashtable_size, shared kmer_t *
    //heap[pos].kmer = (shared char *)&kmers[pos * KMER_PACKED_LENGTH];
    heap[pos].l_ext = left_ext;
    heap[pos].r_ext = right_ext;
+
+   char unpackedKmer[KMER_LENGTH+1];
+   unpackedKmer[KMER_LENGTH] = '\0';
+   unpackSequence(&heap_kmers[pos * KMER_PACKED_LENGTH], unpackedKmer, KMER_LENGTH);
    
    /* Fix the next pointer to point to the appropriate kmer struct */
    heap[pos].next_id = hashtable[hashval].head;
