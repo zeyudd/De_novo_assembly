@@ -168,9 +168,9 @@ int main(int argc, char *argv[]){
 
 
 	
-	char output_file_name[50];
-	sprintf(output_file_name, "pgen%d.out", MYTHREAD);
-	FILE *output_file = fopen(output_file_name, "w"); 
+	char my_file_name[50];
+	sprintf(my_file_name, "pgen%d.out", MYTHREAD);
+	FILE *out_file = fopen(my_file_name, "w"); 
 	//output_file = upc_all_fopen("pgen.out", UPC_WRONLY | UPC_COMMON_FP | UPC_CREATE /*| UPC_STRONG_CA | UPC_TRUNC*/, 0, NULL);
 	
 	/* Pick start nodes from the startKmersList */
