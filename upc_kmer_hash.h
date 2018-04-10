@@ -36,13 +36,11 @@ size_t lookup_kmer(shared [KMER_PACKED_LENGTH] char *kmer_c, shared [1] kmer_t *
     packSequence(kmer, (unsigned char*) packedKmer, KMER_LENGTH);
     size_t hashval = hashkmer(hashlen, (char*) packedKmer);
 
-    //printf(">>>DEBUG2.5: hashval = %zu, hash = %zu <<<\n", hashval, hashtable[hashval].head);
     bucket_t cur_bucket;
     size_t result;
     
     upc_memget(&cur_bucket, hashtable + hashval, sizeof(bucket_t));
     result = cur_bucket.head;
-    //printf(">>>DEBUG3: result = %d <<<\n", result);
     char packed_kmer_buf[KMER_PACKED_LENGTH];
     for (; result!=hashlen; ) {
         upc_memget(packed_kmer_buf, kmer_c + result * KMER_PACKED_LENGTH, KMER_PACKED_LENGTH);
@@ -50,7 +48,6 @@ size_t lookup_kmer(shared [KMER_PACKED_LENGTH] char *kmer_c, shared [1] kmer_t *
             return result;
         }
         result = kmer_i[result].next;
-        //printf(">>>DEBUG4: result = %d <<<\n", result);
    }
    return hashlen;
 }
@@ -68,16 +65,8 @@ int add_kmer(shared kmer_t *kmer_i, shared [KMER_PACKED_LENGTH] char *kmer_c, si
     size_t pos = *posInHeap;
       
     /* Add the contents to the appropriate kmer struct in the heap */ 
-    //printf("THREAD %d packing at pos = %d, addr = %p\n", MYTHREAD, pos, kmer_c + pos * KMER_PACKED_LENGTH);
     upc_memput(kmer_c + pos * KMER_PACKED_LENGTH, packedKmer, KMER_PACKED_LENGTH * sizeof(char));
-    #if 0
-    int i;
-    printf("THREAD%d: kmer_c = ", MYTHREAD);
-    for(i = 0; i< KMER_PACKED_LENGTH; i++){
-        printf("%d", (kmer_c[pos*KMER_PACKED_LENGTH + i] == packedKmer[i])? 1:0);
-    }
-    printf("\n");
-    #endif
+
     kmer_i[pos].l_ext = left_ext;
     kmer_i[pos].r_ext = right_ext;
     /* Fix the next pointer to point to the appropriate kmer struct */
@@ -98,11 +87,8 @@ int add_kmer(shared kmer_t *kmer_i, shared [KMER_PACKED_LENGTH] char *kmer_c, si
 /* Adds a k-mer in the start list by using the memory heap (the k-mer was "just added" in the memory heap at position posInHeap - 1) */
 void addKmerToStartList(shared kmer_t *kmer_i, size_t posInHeap, start_kmer_t **startKmersList)
 {
-    start_kmer_t *new_entry;
-    //size_t ptrToKmer;
-   
-    size_t prevPosInHeap = posInHeap - THREADS;
-    //ptrToKmer = kmer_i[prevPosInHeap];
+    start_kmer_t *new_entry;   
+    size_t prevPosInHeap = posInHeap - THREADS;  
     new_entry = (start_kmer_t*)malloc(sizeof(start_kmer_t));
     new_entry->next = (*startKmersList);
     new_entry->kmerPtr = prevPosInHeap;

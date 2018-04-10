@@ -6,36 +6,24 @@
 #include <time.h>
 #include <upc.h>
 #include <upc_io.h>
-
 #include "upc_packingDNAseq.h"
 #include "upc_kmer_hash.h"
 
-//upc_lock_t heap_lock;
 int main(int argc, char *argv[]){
 
-	//heap_lock = upc_all_lock_alloc();
 	/** Declarations **/
 	double inputTime=0.0, constrTime=0.0, traversalTime=0.0;
-
 	size_t nKmers, avg_nKmers, rem_nKmers, my_lines_to_read, my_lines_to_skip, my_read_size, my_read_offset;
-	size_t cur_chars_read;
-	char *input_UFX_name;
-	unsigned char *my_buffer;
-	size_t i, ptr = 0, myPosInHeap;
-
+	size_t cur_chars_read;	
+	size_t i, ptr = 0, myPosInHeap, posInContig, contigID = 0, totBases = 0, cur_kmer_ptr;
+	char *input_UFX_name;	
 	char cur_contig[MAXIMUM_CONTIG_SIZE], left_ext, right_ext;
-	size_t posInContig, contigID = 0, totBases = 0;
-
-	start_kmer_t *startKmersList = NULL, *curStartNode;
-
 	char kmer_buf[KMER_LENGTH + 1], packed_kmer_buf[KMER_PACKED_LENGTH + 1];
+	unsigned char *my_buffer;
+	start_kmer_t *startKmersList = NULL, *curStartNode;
+	upc_file_t *input_file, *output_file;
 	kmer_buf[KMER_LENGTH] = '\0';
 	packed_kmer_buf[KMER_PACKED_LENGTH] = '\0';
-
-	size_t cur_kmer_ptr;
-
-
-	upc_file_t *input_file, *output_file;
 
 	/** Read input **/
 	upc_barrier;
@@ -82,26 +70,30 @@ int main(int argc, char *argv[]){
 
 	shared [1] kmer_t *kmer_info;
 	kmer_info = (shared [1] kmer_t *)upc_all_alloc (nKmers, sizeof(kmer_t));  	
-//   	if (heaps[MYTHREAD].heap == NULL) {
+//   	if (kmer_info == NULL) {
 //      	fprintf(stderr, "ERROR: Thread %d could not allocate memory for the heap!\n", MYTHREAD);
 //      	upc_global_exit(1);
 //   	}
 
 	shared [KMER_PACKED_LENGTH] char *kmer_char;
 	kmer_char = (shared [KMER_PACKED_LENGTH] char *)upc_all_alloc(nKmers, KMER_PACKED_LENGTH * sizeof(char));
+//   	if (kmer_char == NULL) {
+//      	fprintf(stderr, "ERROR: Thread %d could not allocate memory for the heap!\n", MYTHREAD);
+//      	upc_global_exit(1);
+//   	}
 
 	shared [LOAD_FACTOR] bucket_t *hashtable;
 	hashtable = (shared [LOAD_FACTOR] bucket_t *)upc_all_alloc(nKmers, LOAD_FACTOR *sizeof(bucket_t));
 	size_t hashlen = nKmers * LOAD_FACTOR;	
-//   	if (hashtable.table == NULL) {
+//   	if (hashtable == NULL) {
 //      	fprintf(stderr, "ERROR: Could not allocate memory for the hash table: %lld buckets of %lu bytes\n", n_buckets, sizeof(bucket_t));
 //      	upc_global_exit(1);
 //   	}
 	
-	upc_forall(i = 0; i < hashlen; i++; &hashtable[i]){
+		upc_forall(i = 0; i < hashlen; i++; &hashtable[i]){
 		hashtable[i].head = hashlen;
 	}
-	//upc_memset(hashtable, 0, nKmers * LOAD_FACTOR * sizeof(bucket_t));  
+
 
 	upc_barrier;
 
@@ -115,7 +107,6 @@ int main(int argc, char *argv[]){
       	right_ext = (char) my_buffer[ptr+KMER_LENGTH+2];
 
       	/* Add k-mer to hash table */
-      	//add_kmer(&hashtable, heap, &myPosInHeap, &my_buffer[ptr], left_ext, right_ext);
 		add_kmer(kmer_info, kmer_char, &myPosInHeap, hashtable, hashlen, &my_buffer[ptr], left_ext, right_ext);
 		
       	/* Create also a list with the "start" kmers: nodes with F as left (backward) extension */
@@ -129,48 +120,17 @@ int main(int argc, char *argv[]){
 	
 	//  code for graph construction: end     //
 	//////////////////////////////////////////
-	printf("THREAD%d finished graph construction!\n", MYTHREAD);
-	printf("hashlen = %zu, hash[110421].head = %zu\n", hashlen, hashtable[110421].head);
-
-
 	upc_barrier;
 	constrTime += gettime();
-
-
-	//debug
-	#if 0
-	if(MYTHREAD == 0){
-		int i;
-		for(i = 0; i < nKmers; i++){
-			char buffer[KMER_LENGTH + 1];
-			char packed_buf[KMER_PACKED_LENGTH+1];
-			packed_buf[KMER_PACKED_LENGTH] = '\0';
-			int j;
-			for(j = 0; j < KMER_LENGTH; j++)
-				buffer[j] = 'X';
-
-			buffer[KMER_LENGTH] = '\0';
-			shared char *k = (shared char *)(kmer_char + i*KMER_PACKED_LENGTH);
-			upc_memget(packed_buf, k, KMER_PACKED_LENGTH);
-			printf("pos %d, addr = %p,\t", i, k);
-			unpackSequence(packed_buf, buffer, KMER_LENGTH);			
-			printf("%d\t %c%c %s, next = %d\n",i, kmer_info[i].l_ext, kmer_info[i].r_ext, buffer, kmer_info[i].next);
-		}
-	}
-	#endif
-	
 	
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-
 	/** Graph traversal **/
 	traversalTime -= gettime();
+
 	////////////////////////////////////////////////////////////
 	//  code for graph traversal and output printing: begin   //
 	//  Save your output to "pgen.out"                        //
-	
-
-
 	
 	char my_file_name[50];
 	sprintf(my_file_name, "pgen%d.out", MYTHREAD);
@@ -179,18 +139,13 @@ int main(int argc, char *argv[]){
 	
 	/* Pick start nodes from the startKmersList */
     curStartNode = startKmersList;
-	int iter = 0;
     while (curStartNode != NULL ) {
         /* Need to unpack the seed first */
 		
         cur_kmer_ptr = curStartNode->kmerPtr;
 		upc_memget(packed_kmer_buf, kmer_char + cur_kmer_ptr * KMER_PACKED_LENGTH, KMER_PACKED_LENGTH);
-
-
       	unpackSequence((unsigned char*) packed_kmer_buf,  (unsigned char*) kmer_buf, KMER_LENGTH);
-		//printf("THREAD %d: start kmer = %s\t", MYTHREAD, kmer_buf);
-
-		 
+	 
       	/* Initialize current contig with the seed content */
       	memcpy(cur_contig ,kmer_buf, KMER_LENGTH * sizeof(char));
       	posInContig = KMER_LENGTH;
@@ -198,13 +153,10 @@ int main(int argc, char *argv[]){
 
       	/* Keep adding bases while not finding a terminal node */
       	while (right_ext != 'F') {
-			//printf("while iter = %d\n", iter++);
        	  	cur_contig[posInContig] = right_ext;
        	  	posInContig++;
        	  	/* At position cur_contig[posInContig-KMER_LENGTH] starts the last k-mer in the current contig */
-			//printf(">>>DEBUG1<<<\n");
        	  	cur_kmer_ptr = lookup_kmer(kmer_char, kmer_info, hashtable, hashlen, (const unsigned char *) &cur_contig[posInContig-KMER_LENGTH]);
-			//printf(">>>DEBUG2<<<\n");
 			if(cur_kmer_ptr == hashlen){
 				break;
 			}
@@ -214,12 +166,9 @@ int main(int argc, char *argv[]){
       	/* Print the contig since we have found the corresponding terminal node */
      	cur_contig[posInContig] = '\0';
 		fprintf(out_file, "%s\n", cur_contig);
-		//cur_contig[posInContig+1] = '\0';
-
-		//if(MYTHREAD == 0){ 
-		//int write = upc_all_fwrite_local(output_file, (void *)cur_contig, posInContig + 1, sizeof(char), UPC_IN_NOSYNC | UPC_OUT_NOSYNC);
-		//printf("THREAD %d: start kmer = %s\t contig = %s, posInContig = %d, #bytes written is %d\n", MYTHREAD, kmer_buf, cur_contig, posInContig, write);
-		//}
+		//cur_contig[posInContig+1] = '\0';	 
+		//size_t write = upc_all_fwrite_local(output_file, (void *)cur_contig, posInContig + 1, sizeof(char), UPC_IN_NOSYNC | UPC_OUT_NOSYNC);
+		
       	contigID++;
       	totBases += strlen(cur_contig);
       	/* Move to the next start node in the list */
@@ -227,39 +176,28 @@ int main(int argc, char *argv[]){
       	curStartNode = curStartNode->next;
    }
 	//upc_all_fclose(output_file);
-#if 1	
-	// close the output file
 	fclose(out_file);
-	
 	
 	// clean the allocated memory
 	upc_barrier;
-	
-  	//printf("Traversal Finished on Thread#%d of %d threads.\n", MYTHREAD, THREADS);
-		
+			
 	if(MYTHREAD == 0) {
-	  //upc_free(memory_heap);
+	  //	upc_free();
 	  //upc_free(next_index);
 	  //upc_free(hash_table);
-	  out_file = fopen("pgen.out", "w");
+	  	out_file = fopen("pgen.out", "w");
     
-    for(int t = 0; t < THREADS; ++ t) {
-      char str[50];
-      sprintf(str, "pgen%d.out", t);
-      FILE *in_file = fopen(str, "r");
-      
-      while(fscanf(in_file, "%s", cur_contig) == 1)
-        fprintf(out_file, "%s\n", cur_contig);
-       
-      fclose(in_file);
+    	for(int t = 0; t < THREADS; ++ t) {
+      		char str[50];
+      		sprintf(str, "pgen%d.out", t);
+      		FILE *in_file = fopen(str, "r");
+      		while(fscanf(in_file, "%s", cur_contig) == 1)
+        	fprintf(out_file, "%s\n", cur_contig);      
+      	fclose(in_file);
     }
     
     fclose(out_file);
 	}
-	
-	
-  	
-#endif
 	//  code for graph traversal and output printing: end     //
 	////////////////////////////////////////////////////////////
 	upc_barrier;
