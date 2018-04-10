@@ -36,7 +36,7 @@ int64_t lookup_kmer(shared [KMER_PACKED_LENGTH] char *kmer_c, shared [1] kmer_t 
     int64_t hashval = hashkmer(hashlen, (char*) packedKmer);
     bucket_t cur_bucket;
     int64_t result;
-   
+    printf(">>>DEBUG3<<<\n");
     cur_bucket = hashtable[hashval];
     result = cur_bucket.head;
    
