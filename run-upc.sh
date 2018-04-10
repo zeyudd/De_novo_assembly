@@ -10,7 +10,7 @@ INPUT=test		# Path to your input file
 
 cd $PBS_O_WORKDIR
 # Run program
-#./serial ${INPUT}
+./serial ${INPUT}
 upcrun -np $P -shared-heap=1G ./pgen ${INPUT}
 
 # Sort contigs in both output files to compare
