@@ -39,7 +39,7 @@ int64_t lookup_kmer(shared [LOAD_FACTOR] bucket_t *hashtable, int64_t hashlen, c
     cur_bucket = hashtable[hashval];
     result = cur_bucket.head;
    
-    char packedKmer_buf[KMER_PACKED_LENGTH];
+    char packed_kmer_buf[KMER_PACKED_LENGTH];
     for (; result!=-1; ) {
         upc_memget(packed_kmer_buf, kmer_char + result * KMER_PACKED_LENGTH, KMER_PACKED_LENGTH);
         if ( memcmp(packedKmer, packed_kmer_buf, KMER_PACKED_LENGTH * sizeof(char)) == 0 ) {
