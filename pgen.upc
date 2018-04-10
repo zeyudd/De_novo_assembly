@@ -182,9 +182,9 @@ int main(int argc, char *argv[]){
 	upc_barrier;
 			
 	if(MYTHREAD == 0) {
-	  //	upc_free();
-	  //upc_free(next_index);
-	  //upc_free(hash_table);
+	  	upc_free(kmer_char);
+	  	upc_free(kmer_info);
+	  	upc_free(hashtable);
 	  	out_file = fopen("pgen.out", "w");
     
     	for(int t = 0; t < THREADS; ++ t) {
