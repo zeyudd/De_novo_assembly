@@ -35,7 +35,7 @@ int main(int argc, char *argv[]){
 	int64_t cur_kmer_ptr;
 
 
-	upc_file_t *input_file;
+	upc_file_t *input_file, output_file;
 
 	/** Read input **/
 	upc_barrier;
@@ -171,6 +171,7 @@ int main(int argc, char *argv[]){
 	//char output_file_name[50];
 	//sprintf(output_file_name, "pgen%d.out", MYTHREAD);
 	//FILE *output_file = fopen(output_file_name, "w"); 
+	output_file = upc_all_fopen("pgen.out", UPC_WRONLY | UPC_INDIVIDUAL_FP | UPC_CREATE, 0, NULL);
 	
 	/* Pick start nodes from the startKmersList */
     curStartNode = startKmersList;
@@ -203,8 +204,11 @@ int main(int argc, char *argv[]){
       	}
 
       	/* Print the contig since we have found the corresponding terminal node */
-     	cur_contig[posInContig] = '\0';
-		 printf("THREAD %d: start kmer = %s\t config = %s\n", MYTHREAD, kmer_buf, cur_contig);
+     	cur_contig[posInContig] = '\n';
+		cur_contig[posInContig+1] = '\0';
+
+		upc_all_fwrite_local(outpu_file, cur_contig, sizeof(char), strlen(cur_contig), UPC_IN_ALLSYNC | UPC_OUT_ALLSYNC); 
+		// printf("THREAD %d: start kmer = %s\t config = %s\n", MYTHREAD, kmer_buf, cur_contig);
 
       	contigID++;
       	totBases += strlen(cur_contig);
