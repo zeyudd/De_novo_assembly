@@ -171,7 +171,7 @@ int main(int argc, char *argv[]){
 	//char output_file_name[50];
 	//sprintf(output_file_name, "pgen%d.out", MYTHREAD);
 	//FILE *output_file = fopen(output_file_name, "w"); 
-	output_file = upc_all_fopen("pgen.out", UPC_WRONLY | UPC_INDIVIDUAL_FP | UPC_CREATE | UPC_STRONG_CA | UPC_TRUNC, 0, NULL);
+	output_file = upc_all_fopen("pgen.out", UPC_WRONLY | UPC_INDIVIDUAL_FP  /*| UPC_STRONG_CA | UPC_TRUNC*/, 0, NULL);
 	
 	/* Pick start nodes from the startKmersList */
     curStartNode = startKmersList;
@@ -209,7 +209,7 @@ int main(int argc, char *argv[]){
 
 		if(MYTHREAD == 0){ 
 		printf("THREAD %d: start kmer = %s\t contig = %s\n", MYTHREAD, kmer_buf, cur_contig);
-		upc_all_fwrite_local(output_file, cur_contig, sizeof(char), posInContig + 1, UPC_IN_ALLSYNC | UPC_OUT_ALLSYNC);
+		upc_all_fwrite_local(output_file, (void *)cur_contig, posInContig + 1, sizeof(char), UPC_IN_ALLSYNC | UPC_OUT_ALLSYNC);
 		}
       	contigID++;
       	totBases += strlen(cur_contig);
