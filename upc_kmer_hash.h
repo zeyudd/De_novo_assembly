@@ -36,10 +36,10 @@ int64_t lookup_kmer(shared [KMER_PACKED_LENGTH] char *kmer_c, shared [1] kmer_t 
     int64_t hashval = hashkmer(hashlen, (char*) packedKmer);
     bucket_t cur_bucket;
     int64_t result;
-    printf(">>>DEBUG3<<<\n");
+    
     cur_bucket = hashtable[hashval];
     result = cur_bucket.head;
-   
+    printf(">>>DEBUG3: result = %d <<<\n", result);
     char packed_kmer_buf[KMER_PACKED_LENGTH];
     for (; result!=-1; ) {
         upc_memget(packed_kmer_buf, kmer_c + result * KMER_PACKED_LENGTH, KMER_PACKED_LENGTH);
@@ -47,6 +47,7 @@ int64_t lookup_kmer(shared [KMER_PACKED_LENGTH] char *kmer_c, shared [1] kmer_t 
             return result;
         }
         result = kmer_i[result].next;
+        printf(">>>DEBUG4: result = %d <<<\n", result);
    }
    return -1;
 }
