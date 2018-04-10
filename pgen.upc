@@ -207,9 +207,10 @@ int main(int argc, char *argv[]){
      	cur_contig[posInContig] = '\n';
 		cur_contig[posInContig+1] = '\0';
 
-		upc_all_fwrite_local(output_file, cur_contig, sizeof(char), strlen(cur_contig), UPC_IN_NOSYNC | UPC_OUT_NOSYNC); 
-		printf("THREAD %d: start kmer = %s\t config = %s\n", MYTHREAD, kmer_buf, cur_contig);
-
+		if(MYTHREAD == 0){ 
+		printf("THREAD %d: start kmer = %s\t contig = %s\n", MYTHREAD, kmer_buf, cur_contig);
+		upc_all_fwrite_local(output_file, cur_contig, sizeof(char), strlen(cur_contig), UPC_IN_NOSYNC | UPC_OUT_NOSYNC);
+		}
       	contigID++;
       	totBases += strlen(cur_contig);
       	/* Move to the next start node in the list */
