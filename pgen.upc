@@ -24,6 +24,8 @@ int main(int argc, char *argv[]){
 	int64_t i, ptr = 0, myPosInHeap;
 
 	char cur_contig[MAXIMUM_CONTIG_SIZE], left_ext, right_ext;
+	int64_t posInContig, contigID = 0, totBases = 0
+
 	start_kmer_t *startKmersList = NULL, *curStartNode;
 
 	char kmer_buf[KMER_LENGTH + 1], packed_kmer_buf[KMER_PACKED_LENGTH + 1];
@@ -183,11 +185,11 @@ int main(int argc, char *argv[]){
       	unpackSequence((unsigned char*) packed_kmer_buf,  (unsigned char*) kmer_buf, KMER_LENGTH);
 		printf("THREAD %d: start kmer = %s\n", MYTHREAD, kmer_buf);
 
-		#if 0  
+		#if 1  
       	/* Initialize current contig with the seed content */
-      	memcpy(cur_contig ,unpackedKmer, KMER_LENGTH * sizeof(char));
+      	memcpy(cur_contig ,kmer_buf, KMER_LENGTH * sizeof(char));
       	posInContig = KMER_LENGTH;
-      	right_ext = cur_kmer_ptr->r_ext;
+      	right_ext = kmer_info[cur_kmer_ptr].r_ext;
 
       	/* Keep adding bases while not finding a terminal node */
       	while (right_ext != 'F') {
@@ -195,12 +197,15 @@ int main(int argc, char *argv[]){
        	  	posInContig++;
        	  	/* At position cur_contig[posInContig-KMER_LENGTH] starts the last k-mer in the current contig */
        	  	cur_kmer_ptr = lookup_kmer(&hash_table, (const unsigned char *) &cur_contig[posInContig-KMER_LENGTH]);
-       	  	right_ext = cur_kmer_ptr->r_ext;
+			if(cur_kmer_ptr == -1){
+				break;
+			}
+       	  	right_ext = kmer_info[cur_kmer_ptr].r_ext;
       	}
 
       	/* Print the contig since we have found the corresponding terminal node */
      	cur_contig[posInContig] = '\0';
-      	fprintf(output_file,"%s\n", cur_contig);
+      	printf("config = %s\n", cur_contig);
       	contigID++;
       	totBases += strlen(cur_contig);
       	/* Move to the next start node in the list */

@@ -27,26 +27,28 @@ int64_t hashkmer(int64_t  hashtable_size, char *seq)
    return hashseq(hashtable_size, seq, KMER_PACKED_LENGTH);
 }
 
-/* Looks up a kmer in the hash table and returns a pointer to that entry *//*
-shared kmer_t* lookup_kmer(shared bucket_t *hashtable, int64_t hashtable_size, const unsigned char *kmer)
+/* Looks up a kmer in the hash table and returns a pointer to that entry */
+int64_t lookup_kmer(shared [LOAD_FACTOR] bucket_t *hashtable, int64_t hashlen, const unsigned char *kmer)
 {
     char packedKmer[KMER_PACKED_LENGTH];
     packSequence(kmer, (unsigned char*) packedKmer, KMER_LENGTH);
-    int64_t hashval = hashkmer(hashtable_size, (char*) packedKmer);
+    int64_t hashval = hashkmer(hashlen, (char*) packedKmer);
     bucket_t cur_bucket;
-    shared kmer_t *result;
+    int64_t result;
    
     cur_bucket = hashtable[hashval];
     result = cur_bucket.head;
    
-    for (; result!=NULL; ) {
-        if ( memcmp(packedKmer, (unsigned char*)result->kmer, KMER_PACKED_LENGTH * sizeof(char)) == 0 ) {
+    char packedKmer_buf[KMER_PACKED_LENGTH];
+    for (; result!=-1; ) {
+        upc_memget(packed_kmer_buf, kmer_char + result * KMER_PACKED_LENGTH, KMER_PACKED_LENGTH);
+        if ( memcmp(packedKmer, packed_kmer_buf, KMER_PACKED_LENGTH * sizeof(char)) == 0 ) {
             return result;
         }
-        result = result->next;
+        result = kmer_info[result].next;
    }
-   return NULL;
-}*/
+   return -1;
+}
 
 /* Adds a kmer and its extensions in the hash table (note that a memory heap should be preallocated. ) */
 int add_kmer(shared kmer_t *kmer_i, shared [KMER_PACKED_LENGTH] char *kmer_c, int64_t *posInHeap, 

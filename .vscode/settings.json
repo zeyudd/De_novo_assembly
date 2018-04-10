@@ -8,6 +8,7 @@
         "string_view": "c",
         "vector": "c",
         "ios": "cpp",
-        "math.h": "c"
+        "math.h": "c",
+        "stdlib.h": "c"
     }
 }
