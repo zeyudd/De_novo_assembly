@@ -195,7 +195,7 @@ int main(int argc, char *argv[]){
 
       	/* Keep adding bases while not finding a terminal node */
       	while (right_ext != 'F') {
-			  printf("while iter = %d\n", iter++);
+			printf("while iter = %d\n", iter++);
        	  	cur_contig[posInContig] = right_ext;
        	  	posInContig++;
        	  	/* At position cur_contig[posInContig-KMER_LENGTH] starts the last k-mer in the current contig */
