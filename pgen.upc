@@ -209,7 +209,7 @@ int main(int argc, char *argv[]){
 
 		if(MYTHREAD == 0){ 
 		printf("THREAD %d: start kmer = %s\t contig = %s\n", MYTHREAD, kmer_buf, cur_contig);
-		upc_all_fwrite_local(output_file, cur_contig, sizeof(char), strlen(cur_contig), UPC_IN_NOSYNC | UPC_OUT_NOSYNC);
+		upc_all_fwrite_local(output_file, cur_contig, sizeof(char), posInContig + 1, UPC_IN_NOSYNC | UPC_OUT_NOSYNC);
 		}
       	contigID++;
       	totBases += strlen(cur_contig);
