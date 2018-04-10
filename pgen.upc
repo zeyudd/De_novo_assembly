@@ -94,11 +94,10 @@ int main(int argc, char *argv[]){
 	int64_t myPosInHeap = MYTHREAD;
 
 
-	shared [KMER_PACKED_LENGTH] char *kmers;
-	kmers = (shared [KMER_PACKED_LENGTH] char *)upc_all_alloc(nKmers, KMER_PACKED_LENGTH * sizeof(char));
+	shared [KMER_PACKED_LENGTH] char *heap_kmers;
+	heap_kmers = (shared [KMER_PACKED_LENGTH] char *)upc_all_alloc(nKmers, KMER_PACKED_LENGTH * sizeof(char));
 
 
-	heap = (shared [1] kmer_t *) upc_all_alloc (nKmers, sizeof(kmer_t));
 	
 	while (ptr < cur_chars_read) {
     	/* working_buffer[ptr] is the start of the current k-mer                */
@@ -109,12 +108,12 @@ int main(int argc, char *argv[]){
 
       	/* Add k-mer to hash table */
       	//add_kmer(&hashtable, heap, &myPosInHeap, &my_buffer[ptr], left_ext, right_ext);
-		add_kmer(hashtable, hashtable_size, heap, &myPosInHeap, kmers, &my_buffer[ptr], left_ext, right_ext);
+		add_kmer(hashtable, hashtable_size, heap, &myPosInHeap, heap_kmers, &my_buffer[ptr], left_ext, right_ext);
 		
 
       	/* Create also a list with the "start" kmers: nodes with F as left (backward) extension */
       	if (left_ext == 'F') {
-         	addKmerToStartList(heap, myPosInHeap, &startKmersList);
+        // 	addKmerToStartList(heap, myPosInHeap, &startKmersList);
       	}
 
       	/* Move to the next k-mer in the input working_buffer */
@@ -131,7 +130,7 @@ int main(int argc, char *argv[]){
 	if(MYTHREAD == 0){
 		int i;
 		for(i = 0; i < nKmers; i++){
-			const unsigned char *k = (const unsigned char *)kmers[i*KMER_PACKED_LENGTH];
+			const unsigned char *k = (const unsigned char *)heap_kmers[i*KMER_PACKED_LENGTH];
 			unpackSequence(k, unpackedKmer, KMER_LENGTH);			
 			printf("%c, %c, %s\n", heap[i].l_ext, heap[i].r_ext, unpackedKmer);
 		}
