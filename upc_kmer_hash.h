@@ -28,7 +28,7 @@ int64_t hashkmer(int64_t  hashtable_size, char *seq)
 }
 
 /* Looks up a kmer in the hash table and returns a pointer to that entry */
-int64_t lookup_kmer(shared [LOAD_FACTOR] bucket_t *hashtable, int64_t hashlen, const unsigned char *kmer)
+int64_t lookup_kmer(shared [KMER_PACKED_LENGTH] char *kmer_c, shared [LOAD_FACTOR] bucket_t *hashtable, int64_t hashlen, const unsigned char *kmer)
 {
     char packedKmer[KMER_PACKED_LENGTH];
     packSequence(kmer, (unsigned char*) packedKmer, KMER_LENGTH);
@@ -41,7 +41,7 @@ int64_t lookup_kmer(shared [LOAD_FACTOR] bucket_t *hashtable, int64_t hashlen, c
    
     char packed_kmer_buf[KMER_PACKED_LENGTH];
     for (; result!=-1; ) {
-        upc_memget(packed_kmer_buf, kmer_char + result * KMER_PACKED_LENGTH, KMER_PACKED_LENGTH);
+        upc_memget(packed_kmer_buf, kmer_c + result * KMER_PACKED_LENGTH, KMER_PACKED_LENGTH);
         if ( memcmp(packedKmer, packed_kmer_buf, KMER_PACKED_LENGTH * sizeof(char)) == 0 ) {
             return result;
         }
