@@ -182,7 +182,7 @@ int main(int argc, char *argv[]){
 
 
       	unpackSequence((unsigned char*) packed_kmer_buf,  (unsigned char*) kmer_buf, KMER_LENGTH);
-		printf("THREAD %d: start kmer = %s\t", MYTHREAD, kmer_buf);
+		//printf("THREAD %d: start kmer = %s\t", MYTHREAD, kmer_buf);
 
 		#if 1  
       	/* Initialize current contig with the seed content */
@@ -204,7 +204,8 @@ int main(int argc, char *argv[]){
 
       	/* Print the contig since we have found the corresponding terminal node */
      	cur_contig[posInContig] = '\0';
-      	printf("config = %s\n", cur_contig);
+		 printf("THREAD %d: start kmer = %s\t config = %s\n", MYTHREAD, kmer_buf, cur_contig);
+
       	contigID++;
       	totBases += strlen(cur_contig);
       	/* Move to the next start node in the list */
