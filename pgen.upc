@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
 	upc_all_fseek(input_file, my_read_offset*sizeof(unsigned char), UPC_SEEK_SET);
 	cur_chars_read = upc_all_fread_local(input_file, my_buffer, sizeof(unsigned char), my_read_size, UPC_IN_ALLSYNC | UPC_OUT_ALLSYNC);
 	upc_all_fclose(input_file);	
-	printf("Thread#%d of %d: read %d kMers, skip %d kMers.\n", MYTHREAD, THREADS, my_lines_to_read, my_lines_to_skip);
+	//printf("Thread#%d of %d: read %d kMers, skip %d kMers.\n", MYTHREAD, THREADS, my_lines_to_read, my_lines_to_skip);
 		
 	//   code for input file reading : end   //
 	///////////////////////////////////////////
@@ -68,16 +68,16 @@ int main(int argc, char *argv[]){
     init_LookupTable();
 	/* Creates a hash table and (pre)allocates memory for the memory heap */
 
-	shared [1] kmer_t *kmer_info;
-	kmer_info = (shared [1] kmer_t *)upc_all_alloc (nKmers, sizeof(kmer_t));  	
-//   	if (kmer_info == NULL) {
+	shared [1] kmer_t *kmer_aux;
+	kmer_aux = (shared [1] kmer_t *)upc_all_alloc (nKmers, sizeof(kmer_t));  	
+//   	if (kmer_aux == NULL) {
 //      	fprintf(stderr, "ERROR: Thread %d could not allocate memory for the heap!\n", MYTHREAD);
 //      	upc_global_exit(1);
 //   	}
 
-	shared [KMER_PACKED_LENGTH] char *kmer_char;
-	kmer_char = (shared [KMER_PACKED_LENGTH] char *)upc_all_alloc(nKmers, KMER_PACKED_LENGTH * sizeof(char));
-//   	if (kmer_char == NULL) {
+	shared [KMER_PACKED_LENGTH] char *kmer_key;
+	kmer_key = (shared [KMER_PACKED_LENGTH] char *)upc_all_alloc(nKmers, KMER_PACKED_LENGTH * sizeof(char));
+//   	if (kmer_key == NULL) {
 //      	fprintf(stderr, "ERROR: Thread %d could not allocate memory for the heap!\n", MYTHREAD);
 //      	upc_global_exit(1);
 //   	}
@@ -107,11 +107,11 @@ int main(int argc, char *argv[]){
       	right_ext = (char) my_buffer[ptr+KMER_LENGTH+2];
 
       	/* Add k-mer to hash table */
-		add_kmer(kmer_info, kmer_char, &myPosInHeap, hashtable, hashlen, &my_buffer[ptr], left_ext, right_ext);
+		add_kmer(kmer_aux, kmer_key, &myPosInHeap, hashtable, hashlen, &my_buffer[ptr], left_ext, right_ext);
 		
       	/* Create also a list with the "start" kmers: nodes with F as left (backward) extension */
       	if (left_ext == 'F') {
-         	addKmerToStartList(kmer_info, myPosInHeap, &startKmersList);
+         	addKmerToStartList(kmer_aux, myPosInHeap, &startKmersList);
       	}
 
       	/* Move to the next k-mer in the input working_buffer */
@@ -143,24 +143,24 @@ int main(int argc, char *argv[]){
         /* Need to unpack the seed first */
 		
         cur_kmer_ptr = curStartNode->kmerPtr;
-		upc_memget(packed_kmer_buf, kmer_char + cur_kmer_ptr * KMER_PACKED_LENGTH, KMER_PACKED_LENGTH);
+		upc_memget(packed_kmer_buf, kmer_key + cur_kmer_ptr * KMER_PACKED_LENGTH, KMER_PACKED_LENGTH);
       	unpackSequence((unsigned char*) packed_kmer_buf,  (unsigned char*) kmer_buf, KMER_LENGTH);
 	 
       	/* Initialize current contig with the seed content */
       	memcpy(cur_contig ,kmer_buf, KMER_LENGTH * sizeof(char));
       	posInContig = KMER_LENGTH;
-      	right_ext = kmer_info[cur_kmer_ptr].r_ext;
+      	right_ext = kmer_aux[cur_kmer_ptr].r_ext;
 
       	/* Keep adding bases while not finding a terminal node */
       	while (right_ext != 'F') {
        	  	cur_contig[posInContig] = right_ext;
        	  	posInContig++;
        	  	/* At position cur_contig[posInContig-KMER_LENGTH] starts the last k-mer in the current contig */
-       	  	cur_kmer_ptr = lookup_kmer(kmer_char, kmer_info, hashtable, hashlen, (const unsigned char *) &cur_contig[posInContig-KMER_LENGTH]);
+       	  	cur_kmer_ptr = lookup_kmer(kmer_key, kmer_aux, hashtable, hashlen, (const unsigned char *) &cur_contig[posInContig-KMER_LENGTH]);
 			if(cur_kmer_ptr == hashlen){
 				break;
 			}
-       	  	right_ext = kmer_info[cur_kmer_ptr].r_ext;
+       	  	right_ext = kmer_aux[cur_kmer_ptr].r_ext;
       	}
 
       	/* Print the contig since we have found the corresponding terminal node */
@@ -182,8 +182,8 @@ int main(int argc, char *argv[]){
 	upc_barrier;
 			
 	if(MYTHREAD == 0) {
-	  	upc_free(kmer_char);
-	  	upc_free(kmer_info);
+	  	upc_free(kmer_key);
+	  	upc_free(kmer_aux);
 	  	upc_free(hashtable);
 	  	out_file = fopen("pgen.out", "w");
     
