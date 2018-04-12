@@ -10,6 +10,8 @@ DEFINE 	= -DKMER_LENGTH=$(KMER_LENGTH) -DKMER_PACKED_LENGTH=$(KMER_PACKED_LENGTH
 HEADERS	= contig_generation.h kmer_hash.h packingDNAseq.h
 UPC_HEADERS = upc_contig_generation.h upc_kmer_hash.h upc_packingDNAseq.h
 LIBS	=
+SCRIPTS = job-serial job-upc job-scale-single-node job-scale-multi-node init.sh
+SUBMIT  = $(HEADERS) $(UPC_HEADERS) serial.c pgen.upc sort.cpp $(SCRIPTS) Makefile members.txt report.pdf
 
 TARGETS	= serial pgen
 
@@ -24,3 +26,6 @@ pgen:	pgen.upc $(UPC_HEADERS)
 clean :
 	rm -f *.o
 	rm -rf $(TARGETS)
+
+submit:
+	tar -czvf ding_yuxin_guanhong_hw3.tar.gz $(SUBMIT)

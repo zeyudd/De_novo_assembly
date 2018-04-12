@@ -13,6 +13,7 @@ int main(int argc, char *argv[]){
 
 	/** Declarations **/
 	double inputTime=0.0, constrTime=0.0, traversalTime=0.0;
+	int64_t nLines;
 	size_t nKmers, avg_nKmers, rem_nKmers, my_lines_to_read, my_lines_to_skip, my_read_size, my_read_offset;
 	size_t cur_chars_read;	
 	size_t i, ptr = 0, myPosInHeap, posInContig, contigID = 0, totBases = 0, cur_kmer_ptr;
@@ -33,8 +34,13 @@ int main(int argc, char *argv[]){
 	//   code for input file reading : begin //
 	
 	input_UFX_name = argv[1];
-	nKmers = getNumKmersInUFX(input_UFX_name);
+	nLines = getNumKmersInUFX(input_UFX_name);
+	if(nLines < 0){
+		fprintf(stderr, "getNumKmersInUFX() returned a negative number!\n");
+		exit(-1);
+	}
 	
+	nKmers = nLines;
 	avg_nKmers = nKmers / THREADS;
 	rem_nKmers = nKmers % THREADS;
 	
